@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "featured-bento": {
+      "type": "featured-bento",
+      "settings": {}
+    },
+    "heirloom-promise": {
+      "type": "heirloom-promise",
+      "settings": {}
+    },
+    "featured-products": {
+      "type": "featured-products",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "featured-bento",
+    "heirloom-promise",
+    "featured-products"
+  ]
+}

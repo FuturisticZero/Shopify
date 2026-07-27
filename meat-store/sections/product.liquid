@@ -1,0 +1,933 @@
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<div class="product-page-section">
+  <!-- Breadcrumbs -->
+  <nav class="pdp-breadcrumbs">
+    <a href="/collections/all">Shop</a>
+    <span class="material-symbols-outlined breadcrumb-arrow">chevron_right</span>
+    {% if product.collections.size > 0 %}
+      <a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>
+      <span class="material-symbols-outlined breadcrumb-arrow">chevron_right</span>
+    {% endif %}
+    <span class="breadcrumb-current">{{ product.title | default: "Signature Dry-Aged Ribeye" }}</span>
+  </nav>
+
+  <!-- Product Layout: Asymmetric Bento Style -->
+  <div class="pdp-grid">
+    <!-- Image Gallery Section -->
+    <div class="pdp-gallery-container">
+      <div class="pdp-main-image-wrapper">
+        <div class="pdp-gallery-badges">
+          {% if product.compare_at_price > product.price %}
+            <span class="pdp-badge pdp-badge--sale">Sale</span>
+          {% endif %}
+          {% for tag in product.tags %}
+            {% if tag contains 'Aged' or tag contains 'organic' or tag contains 'Organic' or tag contains 'Limited' or tag contains 'Signature' %}
+              <span class="pdp-badge pdp-badge--tag">{{ tag }}</span>
+            {% endif %}
+          {% endfor %}
+          {% if product.tags.size == 0 and product == blank %}
+            <span class="pdp-badge pdp-badge--tag">45-Day Aged</span>
+            <span class="pdp-badge pdp-badge--secondary">Limited Release</span>
+          {% endif %}
+        </div>
+
+        {% if product.featured_image %}
+          <img id="pdp-hero-image" class="pdp-main-image" src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.featured_image.alt | escape }}" width="600" height="750" loading="eager">
+        {% else %}
+          <img id="pdp-hero-image" class="pdp-main-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBryUvDK2ta20LtL_trx-PJejffehszzfAfeZZYbJXvIaEu2FCuNNMZspW4GbGcwu_f6oLZ2IIoRUPGVFZlVqn1HccjVyOsOBiBYKKyXc7C0gTge6v72BkBhXpxqSK3sfBBoSJYvgGxqTg9vujd9ozeL8vfapZfVu2bo_G7aA-CRostKk2xlP5lg89psGvUzabKQdFyhjBRo6f0V1Q6_t8aCXJQCGLG-2LhL4LncC9OmCvumin5_VCBxXvwMuhaq1G8hNK_4vmRJV_i" alt="Signature Dry-Aged Ribeye" width="600" height="750" loading="eager">
+        {% endif %}
+      </div>
+
+      <!-- Thumbnails Grid -->
+      <div class="pdp-thumbnails-grid">
+        {% if product.images.size > 0 %}
+          {% for image in product.images %}
+            <div class="pdp-thumbnail-wrapper {% if forloop.first %}active-thumb{% endif %}">
+              <img class="pdp-thumbnail-img" src="{{ image | image_url: width: 240 }}" alt="{{ image.alt | escape }}" width="80" height="80" loading="lazy" data-hero-src="{{ image | image_url: width: 1200 }}">
+            </div>
+          {% endfor %}
+        {% else %}
+          <!-- Mock Thumbnails if no images exist -->
+          <div class="pdp-thumbnail-wrapper active-thumb">
+            <img class="pdp-thumbnail-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBryUvDK2ta20LtL_trx-PJejffehszzfAfeZZYbJXvIaEu2FCuNNMZspW4GbGcwu_f6oLZ2IIoRUPGVFZlVqn1HccjVyOsOBiBYKKyXc7C0gTge6v72BkBhXpxqSK3sfBBoSJYvgGxqTg9vujd9ozeL8vfapZfVu2bo_G7aA-CRostKk2xlP5lg89psGvUzabKQdFyhjBRo6f0V1Q6_t8aCXJQCGLG-2LhL4LncC9OmCvumin5_VCBxXvwMuhaq1G8hNK_4vmRJV_i" alt="Thumb 1" width="80" height="80" loading="lazy" data-hero-src="https://lh3.googleusercontent.com/aida-public/AB6AXuBryUvDK2ta20LtL_trx-PJejffehszzfAfeZZYbJXvIaEu2FCuNNMZspW4GbGcwu_f6oLZ2IIoRUPGVFZlVqn1HccjVyOsOBiBYKKyXc7C0gTge6v72BkBhXpxqSK3sfBBoSJYvgGxqTg9vujd9ozeL8vfapZfVu2bo_G7aA-CRostKk2xlP5lg89psGvUzabKQdFyhjBRo6f0V1Q6_t8aCXJQCGLG-2LhL4LncC9OmCvumin5_VCBxXvwMuhaq1G8hNK_4vmRJV_i">
+          </div>
+          <div class="pdp-thumbnail-wrapper">
+            <img class="pdp-thumbnail-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATZUM0y-oTu8gRl-QqFtrm5AM5VUsTEE-VK0XX7NkSJ9TwotDZeznMcmWixFRzTR5z0ND7_7PrGWjS2dRQ1cW4ZT6VqpCkr-XbI13rv3G5wutKJ-tfluP9O4w6mgLpocINMGuug3vTDpzDacyt3BNDwpf5izlityVQU7bDmkw1dtZcEJz8nt5nSCTHl7YLCQGmGz5cf4ErP0onv_J_D-o1E2oaE-50OfvbMa60OrQHkBgyGtEjenJoqPRgbleQB4Wcj6xso0YfIXee" alt="Thumb 2" width="80" height="80" loading="lazy" data-hero-src="https://lh3.googleusercontent.com/aida-public/AB6AXuATZUM0y-oTu8gRl-QqFtrm5AM5VUsTEE-VK0XX7NkSJ9TwotDZeznMcmWixFRzTR5z0ND7_7PrGWjS2dRQ1cW4ZT6VqpCkr-XbI13rv3G5wutKJ-tfluP9O4w6mgLpocINMGuug3vTDpzDacyt3BNDwpf5izlityVQU7bDmkw1dtZcEJz8nt5nSCTHl7YLCQGmGz5cf4ErP0onv_J_D-o1E2oaE-50OfvbMa60OrQHkBgyGtEjenJoqPRgbleQB4Wcj6xso0YfIXee">
+          </div>
+          <div class="pdp-thumbnail-wrapper">
+            <img class="pdp-thumbnail-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3BDA123tRbYmtZSpYugSCKoW-tDcg1tJH6dgJFOv5r5Lacm13TPw_dQhLf_lkDkvrKWB5S5JTG2xGKIqZlumXK07UToazvUf__-mgC8fP0oodQgMsD5sV5rcFGaUH5aHEekjXaDu6-avTnhhvz7qw976Acs3DqiPDi3BvoTjMMZdFvyLuqk2mqxURYWpLPt2-GRSIVwvvHhcGJtxnCWxCjASN27ho9uOhIUm8jtNqV1LzQngbRv4LDygOd1Mc7JgKLT5QD9Upqacq" alt="Thumb 3" width="80" height="80" loading="lazy" data-hero-src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3BDA123tRbYmtZSpYugSCKoW-tDcg1tJH6dgJFOv5r5Lacm13TPw_dQhLf_lkDkvrKWB5S5JTG2xGKIqZlumXK07UToazvUf__-mgC8fP0oodQgMsD5sV5rcFGaUH5aHEekjXaDu6-avTnhhvz7qw976Acs3DqiPDi3BvoTjMMZdFvyLuqk2mqxURYWpLPt2-GRSIVwvvHhcGJtxnCWxCjASN27ho9uOhIUm8jtNqV1LzQngbRv4LDygOd1Mc7JgKLT5QD9Upqacq">
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Product Purchase Details Box -->
+    <div class="pdp-info-panel-wrapper">
+      <div class="paper-bg pdp-info-card">
+        <!-- Inner decorative border -->
+        <div class="pdp-card-inner-border"></div>
+
+        <div class="pdp-card-content">
+          <div class="pdp-meta-header">
+            <span class="pdp-sku-label">Master Cut No. 104</span>
+            
+            <div class="pdp-rating-stars-wrapper">
+              <span class="material-symbols-outlined rating-star-icon">star</span>
+              <span class="material-symbols-outlined rating-star-icon">star</span>
+              <span class="material-symbols-outlined rating-star-icon">star</span>
+              <span class="material-symbols-outlined rating-star-icon">star</span>
+              <span class="material-symbols-outlined rating-star-icon">star</span>
+              <span class="pdp-reviews-count">(128 Reviews)</span>
+            </div>
+          </div>
+
+          <h1 class="pdp-product-title">{{ product.title | default: "Signature Dry-Aged Ribeye" }}</h1>
+          
+          <div class="pdp-description-text">
+            {% if product.description != blank %}
+              {{ product.description }}
+            {% else %}
+              "A testament to patience. Our Ribeye is dry-aged for 45 days in Himalayan salt-walled chambers, developing an unparalleled depth of nutty, blue-cheese flavor and a texture that yields like butter."
+            {% endif %}
+          </div>
+
+          <!-- Add to Cart Form -->
+          {% form 'product', product, class: 'pdp-cart-form' %}
+            <!-- Hidden option selector input -->
+            <input type="hidden" id="pdp-selected-variant-id" name="id" value="{{ current_variant.id | default: 12345678 }}" />
+
+            {% unless product.has_only_default_variant %}
+              <!-- Variant Option Selection Buttons -->
+              <div class="pdp-options-container">
+                <label class="pdp-option-title">Select Cut Weight</label>
+                
+                <div class="pdp-option-buttons-grid">
+                  {% if product.variants.size > 0 %}
+                    {% for variant in product.variants %}
+                      <button type="button" class="pdp-option-btn {% if variant == current_variant %}active-option{% endif %}" 
+                              data-variant-id="{{ variant.id }}" 
+                              data-variant-price="{{ variant.price | money }}"
+                              data-variant-available="{{ variant.available }}">
+                        {{ variant.title }}
+                      </button>
+                    {% endfor %}
+                  {% else %}
+                    <!-- Fallback Mock Variants -->
+                    <button type="button" class="pdp-option-btn" data-variant-price="$52.00" data-variant-weight="Price per cut">14 OZ</button>
+                    <button type="button" class="pdp-option-btn active-option" data-variant-price="$64.00" data-variant-weight="Price per cut">18 OZ</button>
+                    <button type="button" class="pdp-option-btn" data-variant-price="$78.00" data-variant-weight="Price per cut">22 OZ</button>
+                    <button type="button" class="pdp-option-btn" data-variant-price="$115.00" data-variant-weight="Price per cut">32 OZ (Tomahawk)</button>
+                  {% endif %}
+                </div>
+              </div>
+            {% endunless %}
+
+            <!-- Price display block -->
+            <div class="pdp-price-block">
+              <span id="pdp-price-display" class="pdp-price-value">{{ current_variant.price | money | default: "$64.00" }}</span>
+            </div>
+
+            <!-- Form Action Buttons -->
+            <div class="pdp-actions-block">
+              {% if product.available or product == blank %}
+                <button type="submit" class="btn pdp-add-to-box-btn">
+                  Add to Artisan Box
+                </button>
+              {% else %}
+                <button type="button" class="btn pdp-add-to-box-btn pdp-add-to-box-btn--soldout" disabled>
+                  Sold Out
+                </button>
+              {% endif %}
+
+              <button type="button" id="pdp-share-button" class="pdp-sec-btn">
+                <span class="material-symbols-outlined sec-btn-icon">share</span> Share Cut
+              </button>
+            </div>
+          {% endform %}
+
+          <!-- Sourcing Block -->
+          <div class="pdp-sourcing-panel">
+            <div class="pdp-sourcing-avatar-wrapper">
+              <img class="pdp-sourcing-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDutUmO-FXLCYKUzdNoe1JMpSZfY2VUhC_hJSKj_yHHbYW7Cgds16lNSnLKXKI3CZIcTWcHV1qSPTXhjouIpCe_J5wtbm88k5QwzPkO4hXtADTghYqen7CPrC04cBLP30zn_6aHBdTaJH2o7O9vp_bL8YZ7_3L4w6cI5AK5PayMKiSlavbQGErK__p60E6MsLEc-MQCx2-ilrz9-sLnUrV2qI05hNMzAKR7vanty_E-JliXggfNX57hC7zBolRgtaMOYzhUx1DZp-hW" alt="Master Butcher Portrait" width="48" height="48" loading="lazy">
+            </div>
+            <div class="pdp-sourcing-meta">
+              <span class="pdp-sourcing-label">Sourced From</span>
+              <span class="pdp-sourcing-farm">{{ section.settings.farm_name | escape }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pairs Well Section -->
+  <section class="pairings-section">
+    <div class="pairings-header-row">
+      <div>
+        <h2 class="pairings-small-heading">Curated Pairings</h2>
+        <p class="pairings-title font-headline-md">Pairs Well With</p>
+      </div>
+      <a href="/collections/all" class="pairings-view-all-link">View All Sides</a>
+    </div>
+
+    <div class="pairings-product-grid">
+      {% assign limit_count = 4 %}
+      {% if section.settings.pairings_collection != blank and section.settings.pairings_collection.products_count > 0 %}
+        {% for paired_product in section.settings.pairings_collection.products limit: limit_count %}
+          <div class="pairing-item-card group">
+            <div class="pairing-img-container">
+              {% if paired_product.featured_image %}
+                <img class="pairing-item-img" src="{{ paired_product.featured_image | image_url: width: 400 }}" alt="{{ paired_product.title | escape }}" width="200" height="200" loading="lazy">
+              {% else %}
+                {{ 'product-2' | placeholder_svg_tag: 'pairing-item-img placeholder-svg' }}
+              {% endif %}
+
+              <div class="pairing-hover-overlay">
+                <form method="post" action="{{ routes.cart_add_url }}">
+                  <input type="hidden" name="id" value="{{ paired_product.variants.first.id }}">
+                  <button type="submit" class="btn pairing-add-btn">+ Add</button>
+                </form>
+              </div>
+            </div>
+            <h3 class="pairing-item-title">{{ paired_product.title }}</h3>
+            <p class="pairing-item-price">{{ paired_product.price | money }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <!-- Mock Cross Sell items matching Stitch 'Pairs Well' Layout -->
+        
+        <!-- Cross Sell 1 -->
+        <div class="pairing-item-card group">
+          <div class="pairing-img-container">
+            <img class="pairing-item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbRaPd_6fgZk2vbDxdx49AasXjJQJSXPiXxFcRI90bG-Q3zwPiKxLtGDVkbdMcImVbp1copTST7RInxgMMpM2ppud1a83abVE-JvgX-XtjhDXQw5May-WOud0KNgvV4ui3kSZa779wkPeh4SvO0H3mArPV6aXDrnBdpw3YioenK3jWxQ6w3r51Xct4EFHQppwlrZo_8kKZ196jT3pC1j2pqkMlN3gxSjguLlM4gKfR0HK7Q1yi1U5FhKbe_8yFWrillt9sw-cH4VtD" alt="Black Truffle Finishing Butter" width="200" height="200" loading="lazy">
+            <div class="pairing-hover-overlay">
+              <button type="button" class="btn pairing-add-btn">+ Add</button>
+            </div>
+          </div>
+          <h3 class="pairing-item-title">Black Truffle Finishing Butter</h3>
+          <p class="pairing-item-price">$18.00</p>
+        </div>
+
+        <!-- Cross Sell 2 -->
+        <div class="pairing-item-card group">
+          <div class="pairing-img-container">
+            <img class="pairing-item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaD99mIF2Ye3cZ0YlIjhpgBXOOIOl3Y52JeLJwEXyzllRfP4Ol1-EP3h1b9dWEsHnqqD1ua3xF5k1fSi33kEAaw9tYtxYtKW1BkrYuYDke-u__9l-uWb02uYRmDVpT0v-74hS2ELk1ShD6foVgihgEBC7cIhwyfmjbkPrnyv_m-XVm-OmUN24tWjgUnOl2ZHm9Q0IydRGgE8iVRhY7cbRVBCOmxUiOX9UDFMeUmAE291qU2pHt8zjVSf799YUGxdYPQZF4sgVh4AsT" alt="Smoked Peppercorn & Salt Blend" width="200" height="200" loading="lazy">
+            <div class="pairing-hover-overlay">
+              <button type="button" class="btn pairing-add-btn">+ Add</button>
+            </div>
+          </div>
+          <h3 class="pairing-item-title">Smoked Peppercorn &amp; Salt Blend</h3>
+          <p class="pairing-item-price">$14.00</p>
+        </div>
+
+        <!-- Cross Sell 3 -->
+        <div class="pairing-item-card group">
+          <div class="pairing-img-container">
+            <img class="pairing-item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABv2RpYgHb5wep-8QAc9Zz4QOKFJ8-M2LgwQGGLimsBfR59m-ogN-uYcTesC6bEwU9BCNGfAmd7cvFBLYOLBY6wqBKhWG7oRcRniqBnXxjJo4onz7SR-N1_uPdMubGHC62PWgazcyc9I2s7wxVbLMi8BzteEO_jP6ozXIgGNTxA3qPNbtY9X_65T2bFFZ1yDpo7zB1t0HwnFGbd2BKLsigX-XSP3L4OaRDvQiuOhP_pRLMXSE2ntHQHUitMyk6-6KgdTyYR2Mt9kjl" alt="Estate Cabernet Sauvignon" width="200" height="200" loading="lazy">
+            <div class="pairing-hover-overlay">
+              <button type="button" class="btn pairing-add-btn">+ Add</button>
+            </div>
+          </div>
+          <h3 class="pairing-item-title">Estate Cabernet Sauvignon</h3>
+          <p class="pairing-item-price">$48.00</p>
+        </div>
+
+        <!-- Cross Sell 4 -->
+        <div class="pairing-item-card group">
+          <div class="pairing-img-container">
+            <img class="pairing-item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWLGvReVXrAabmuJQDFbCAFSqhho4Agelv7R-m3ikvhCCm9MjqFPWWkPt1hkjvWyEkPire_xfFzF86YNqbddCqpaCytQ0a2Z7hx8Pc7qBG8YlpDVR7TO8yS2LiwFWMo05LamsExjFG_odlt5wU0ZckpRrCJMte2NhA0xpUEPKlAmHC3atjW8IHXzBfjzcKlfi__skTH7-3_HmqDpjHpNbM4Sa42gzmFfLChSFXkEOnrorVlw8q_xCPHuXm6nVQm7DPNdPEmXiON45Y" alt="Beef Tallow Roast Potatoes" width="200" height="200" loading="lazy">
+            <div class="pairing-hover-overlay">
+              <button type="button" class="btn pairing-add-btn">+ Add</button>
+            </div>
+          </div>
+          <h3 class="pairing-item-title">Beef Tallow Roast Potatoes</h3>
+          <p class="pairing-item-price">$22.00</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+<script>
+  // Image gallery switcher
+  const thumbs = document.querySelectorAll('.pdp-thumbnail-wrapper');
+  const mainHeroImage = document.getElementById('pdp-hero-image');
+
+  thumbs.forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      // Remove active states
+      thumbs.forEach(t => t.classList.remove('active-thumb'));
+      // Add active state to clicked
+      thumb.classList.add('active-thumb');
+
+      // Swap image sources
+      const imgEl = thumb.querySelector('.pdp-thumbnail-img');
+      if (imgEl && mainHeroImage) {
+        mainHeroImage.src = imgEl.dataset.heroSrc;
+        mainHeroImage.alt = imgEl.alt;
+      }
+    });
+
+    // Also support hover activation
+    thumb.addEventListener('mouseover', () => {
+      const imgEl = thumb.querySelector('.pdp-thumbnail-img');
+      if (imgEl && mainHeroImage) {
+        mainHeroImage.src = imgEl.dataset.heroSrc;
+      }
+    });
+  });
+
+  // Variant selector buttons interactive script
+  const optionButtons = document.querySelectorAll('.pdp-option-btn');
+  const variantInput = document.getElementById('pdp-selected-variant-id');
+  const priceDisplay = document.getElementById('pdp-price-display');
+  const weightLabel = document.getElementById('pdp-price-weight-label');
+
+  optionButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Deactivate all buttons
+      optionButtons.forEach(b => b.classList.remove('active-option'));
+      
+      // Activate clicked
+      btn.classList.add('active-option');
+
+      // Update input variant ID value
+      const variantId = btn.dataset.variantId;
+      if (variantInput && variantId) {
+        variantInput.value = variantId;
+      }
+
+      // Update price display
+      const price = btn.dataset.variantPrice;
+      if (priceDisplay && price) {
+        priceDisplay.innerText = price;
+      }
+
+      // Update weight label
+      const weight = btn.dataset.variantWeight;
+      if (weightLabel && weight) {
+        weightLabel.innerText = weight;
+      }
+    });
+  });
+</script>
+
+{% stylesheet %}
+  .product-page-section {
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: var(--spacing-section-gap-mobile) var(--page-margin);
+  }
+
+  @media (min-width: 768px) {
+    .product-page-section {
+      padding: var(--spacing-section-gap) var(--page-margin);
+    }
+  }
+
+  .pdp-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
+  }
+
+  .pdp-breadcrumbs a {
+    color: var(--color-on-surface-variant);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .pdp-breadcrumbs a:hover {
+    color: var(--color-primary);
+  }
+
+  .breadcrumb-arrow {
+    font-size: 0.875rem !important;
+  }
+
+  .breadcrumb-current {
+    color: var(--color-primary);
+  }
+
+  .pdp-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-gutter);
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-grid {
+      grid-template-columns: repeat(12, 1fr);
+    }
+  }
+
+  .pdp-gallery-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-gallery-container {
+      grid-column: span 7;
+    }
+  }
+
+  .pdp-main-image-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--style-border-radius);
+    border: 1px solid rgba(228, 228, 204, 0.05);
+  }
+
+  .pdp-main-image {
+    width: 100%;
+    height: 100%;
+    object-cover: cover;
+    object-position: center;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pdp-main-image-wrapper:hover .pdp-main-image {
+    transform: none !important;
+  }
+
+  .pdp-gallery-badges {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pdp-badge {
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--style-border-radius);
+  }
+
+  .pdp-badge--sale {
+    background-color: var(--color-primary-container);
+    color: var(--color-secondary);
+  }
+
+  .pdp-badge--tag {
+    background-color: var(--color-primary-container);
+    color: #ffffff;
+  }
+
+  .pdp-badge--secondary {
+    background-color: var(--color-surface-container-highest);
+    color: var(--color-secondary);
+  }
+
+  .pdp-thumbnails-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .pdp-thumbnail-wrapper {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--style-border-radius);
+    border: 1px solid rgba(228, 228, 204, 0.1);
+    cursor: pointer;
+    background-color: var(--color-surface-container-lowest);
+    transition: all 0.3s ease;
+  }
+
+  .pdp-thumbnail-wrapper.active-thumb {
+    border-color: var(--color-primary);
+  }
+
+  .pdp-thumbnail-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+  }
+
+  .pdp-thumbnail-wrapper:hover .pdp-thumbnail-img,
+  .pdp-thumbnail-wrapper.active-thumb .pdp-thumbnail-img {
+    filter: grayscale(0%);
+  }
+
+  .pdp-info-panel-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 1024px) {
+    .pdp-info-panel-wrapper {
+      grid-column: span 5;
+    }
+  }
+
+  .pdp-info-card {
+    position: relative;
+    padding: 2.5rem;
+    border-radius: var(--style-border-radius);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  .pdp-card-inner-border {
+    position: absolute;
+    inset: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .pdp-card-content {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .pdp-meta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .pdp-sku-label {
+    font-family: var(--font-label-family);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(27, 29, 14, 0.6);
+  }
+
+  .pdp-rating-stars-wrapper {
+    display: flex;
+    align-items: center;
+    color: #800020; /* Burgundy stars */
+  }
+
+  .rating-star-icon {
+    font-size: 1.125rem !important;
+    font-variation-settings: 'FILL' 1, 'wght' 400;
+  }
+
+  .pdp-reviews-count {
+    margin-left: 0.5rem;
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+  }
+
+  .pdp-product-title {
+    font-family: var(--font-headline-family);
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #0e0e0e !important;
+    margin-bottom: 1.5rem;
+  }
+
+  .pdp-description-text {
+    font-family: var(--font-body-family);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(27, 29, 14, 0.8) !important;
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  .pdp-cart-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pdp-options-container {
+    margin-bottom: 2rem;
+  }
+
+  .pdp-option-title {
+    display: block;
+    font-family: var(--font-label-family);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(27, 29, 14, 0.6);
+    margin-bottom: 0.75rem;
+  }
+
+  .pdp-option-buttons-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .pdp-option-btn {
+    background-color: transparent !important;
+    border: 2px solid rgba(0, 0, 0, 0.1) !important;
+    color: #1b1d0e !important;
+    font-family: var(--font-label-family) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.75rem 1.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .pdp-option-btn:hover {
+    border-color: #800020 !important;
+  }
+
+  .pdp-option-btn.active-option {
+    border-color: #800020 !important;
+    background-color: rgba(128, 0, 32, 0.05) !important;
+    font-weight: 700 !important;
+  }
+
+  .pdp-price-block {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .pdp-price-value {
+    font-family: var(--font-headline-family);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #800020;
+  }
+
+  .pdp-price-label {
+    font-family: var(--font-label-family);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+    padding-bottom: 0.25rem;
+  }
+
+  .pdp-actions-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .pdp-add-to-box-btn {
+    width: 100% !important;
+    background-color: #800020 !important; /* Burgundy */
+    color: #ffffff !important;
+    font-family: var(--font-label-family) !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase !important;
+    padding: 1.25rem !important;
+    transition: background-color 0.3s ease !important;
+    box-shadow: 0 10px 20px rgba(128, 0, 32, 0.2) !important;
+  }
+
+  .pdp-add-to-box-btn:hover {
+    background-color: #5d0016 !important;
+  }
+
+  .pdp-add-to-box-btn--soldout {
+    background-color: #4a4a4a !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+  }
+
+  .pdp-secondary-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .pdp-sec-btn {
+    background-color: transparent !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    color: #1b1d0e !important;
+    font-family: var(--font-label-family) !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    padding: 0.75rem 0 !important;
+    cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease !important;
+  }
+
+  .pdp-sec-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .sec-btn-icon {
+    font-size: 1rem !important;
+  }
+
+  .pdp-sourcing-panel {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    margin-top: auto;
+  }
+
+  .pdp-sourcing-avatar-wrapper {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .pdp-sourcing-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pdp-sourcing-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pdp-sourcing-label {
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    margin-bottom: 0.125rem;
+  }
+
+  .pdp-sourcing-farm {
+    font-family: var(--font-headline-family);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1b1d0e;
+  }
+
+  /* Pairings / Cross-sell section */
+  .pairings-section {
+    margin-top: var(--spacing-section-gap);
+  }
+
+  .pairings-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(228, 228, 204, 0.2);
+    padding-bottom: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .pairings-small-heading {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .pairings-title {
+    text-transform: uppercase;
+  }
+
+  .pairings-view-all-link {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+    padding-bottom: 0.25rem;
+  }
+
+  .pairings-view-all-link:hover {
+    color: var(--color-primary);
+  }
+
+  .pairings-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-gutter);
+  }
+
+  @media (min-width: 768px) {
+    .pairings-product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .pairing-item-card {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  .pairing-img-container {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--style-border-radius);
+    background-color: var(--color-surface-container-low);
+    margin-bottom: 1rem;
+    border: 1px solid rgba(228, 228, 204, 0.05);
+  }
+
+  .pairing-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .pairing-item-card:hover .pairing-item-img {
+    transform: none !important;
+  }
+
+  .pairing-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+  }
+
+  .pairing-item-card:hover .pairing-hover-overlay {
+    opacity: 1;
+  }
+
+  .pairing-add-btn {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-family: var(--font-label-family) !important;
+    font-size: 0.625rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .pairing-item-title {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+  }
+
+  .pairing-item-price {
+    font-family: var(--font-headline-family);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+{% endstylesheet %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const shareBtn = document.getElementById('pdp-share-button');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', () => {
+        const shareData = {
+          title: {{ product.title | json }} || document.title,
+          text: {{ product.description | strip_html | truncate: 100 | json }} || '',
+          url: window.location.href
+        };
+        
+        if (navigator.share) {
+          navigator.share(shareData)
+            .catch((error) => console.log('Error sharing', error));
+        } else {
+          // Fallback: Copy link to clipboard
+          navigator.clipboard.writeText(window.location.href)
+            .then(() => {
+              const originalText = shareBtn.innerHTML;
+              shareBtn.innerHTML = '<span class="material-symbols-outlined sec-btn-icon">check</span> Link Copied!';
+              setTimeout(() => {
+                shareBtn.innerHTML = originalText;
+              }, 2000);
+            })
+            .catch((err) => {
+              console.error('Could not copy text: ', err);
+            });
+        }
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product Details",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
+      "label": "Show Share Buttons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "farm_name",
+      "label": "Farm Name Sourcing",
+      "default": "Heritage Oaks Farm, VT"
+    },
+    {
+      "type": "collection",
+      "id": "pairings_collection",
+      "label": "Pairings Collection"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

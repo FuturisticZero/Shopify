@@ -1,0 +1,39 @@
+{
+  "sections": {
+    "main": {
+      "type": "collection",
+      "settings": {},
+      "blocks": {
+        "beef": {
+          "type": "filter_collection",
+          "settings": {
+            "collection": "beef",
+            "label": "Beef"
+          }
+        },
+        "pork": {
+          "type": "filter_collection",
+          "settings": {
+            "collection": "pork",
+            "label": "Pork"
+          }
+        },
+        "lamb": {
+          "type": "filter_collection",
+          "settings": {
+            "collection": "lamb",
+            "label": "Lamb"
+          }
+        }
+      },
+      "block_order": [
+        "beef",
+        "pork",
+        "lamb"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

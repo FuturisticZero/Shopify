@@ -1,0 +1,703 @@
+<div class="cart-page-section">
+  <!-- Cart Page Header -->
+  <div class="cart-page-header">
+    <h1 class="cart-title">Your Box</h1>
+    <p class="cart-subtitle">
+      {% if cart.item_count > 0 %}
+        Curated heritage cuts, prepared for your kitchen.
+      {% else %}
+        Your Box is empty. Discover our heritage selections below.
+      {% endif %}
+    </p>
+  </div>
+
+  <div class="cart-grid">
+    <!-- Main Cart Area: Butcher Paper Container -->
+    <div class="cart-main-container butcher-paper">
+      <!-- Corner Fold Decoration -->
+      <div class="paper-corner-fold"></div>
+      
+      <div class="cart-items-list">
+        {% if cart.item_count > 0 %}
+          <!-- Real Cart Items -->
+          <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+            {% for item in cart.items %}
+              <div class="cart-item-row">
+                <div class="cart-item-img-wrapper">
+                  {% if item.image %}
+                    <img class="cart-item-img" src="{{ item.image | image_url: width: 400 }}" alt="{{ item.title | escape }}" width="200" height="200" loading="lazy">
+                  {% else %}
+                    {{ 'product-1' | placeholder_svg_tag: 'cart-item-img placeholder-svg' }}
+                  {% endif %}
+                </div>
+
+                <div class="cart-item-details">
+                  <div class="cart-item-header">
+                    <div>
+                      <h3 class="cart-item-title">{{ item.product.title }}</h3>
+                      <p class="cart-item-meta">{{ item.variant.title }} • {{ item.vendor }}</p>
+                    </div>
+                    <a href="{{ item.url_to_remove }}" class="cart-item-remove-btn" aria-label="Remove item">
+                      <span class="material-symbols-outlined">close</span>
+                    </a>
+                  </div>
+
+                  <div class="cart-item-footer">
+                    <div class="cart-item-quantity-selector">
+                      <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | minus: 1 }}" class="qty-adjust-btn" aria-label="Decrease quantity">
+                        <span class="material-symbols-outlined">remove</span>
+                      </a>
+                      <span class="qty-adjust-val">{{ item.quantity }}</span>
+                      <a href="/cart/change?line={{ forloop.index }}&quantity={{ item.quantity | plus: 1 }}" class="qty-adjust-btn" aria-label="Increase quantity">
+                        <span class="material-symbols-outlined">add</span>
+                      </a>
+                    </div>
+
+                    <div class="cart-item-price-block">
+                      <span class="cart-item-price-label">Price</span>
+                      <span class="cart-item-price-val">{{ item.final_line_price | money }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </form>
+        {% else %}
+          <!-- Fallback Showcase Mock items matching Stitch 'Your Box' Design -->
+          <div class="cart-empty-notice-banner">
+            <span class="material-symbols-outlined empty-box-icon">shopping_basket</span>
+            <p>Your box is currently empty, but here is what a premium box selection looks like:</p>
+          </div>
+
+          <!-- Mock Item 1 -->
+          <div class="cart-item-row mock-item">
+            <div class="cart-item-img-wrapper">
+              <img class="cart-item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3K81od5Hecayzj7YUnKnaAlLx8eLoLzIYC0Cr_Q_QxoiGVV8uOWUV53diPtCZmoVZ3gKUNZ3iZ1f56yQMeXWdMLhnZfXoGbSvOjpTwuW8-4Ho8wkOIORl4NDRZC3lWnEpMDQCIqoBtlHKBAW62EmUtgC9k6XXOmP5W4IL6B9Eb1yiblEUTMBh4w5oamf4je4-TeNib21y-3E__Avz69bn-CIcbvLHjPox6rTeYrOO3DXuNoVawjmC0WMa54BwRq5e9H1CG2Dx85LN" alt="Dry-Aged Bone-In Ribeye" width="200" height="200" loading="lazy">
+            </div>
+            <div class="cart-item-details">
+              <div class="cart-item-header">
+                <div>
+                  <h3 class="cart-item-title">Dry-Aged Bone-In Ribeye</h3>
+                  <p class="cart-item-meta">28-Day Aged • Grass Fed</p>
+                </div>
+                <button type="button" class="cart-item-remove-btn"><span class="material-symbols-outlined">close</span></button>
+              </div>
+              <div class="cart-item-footer">
+                <div class="cart-item-quantity-selector">
+                  <button type="button" class="qty-adjust-btn"><span class="material-symbols-outlined">remove</span></button>
+                  <span class="qty-adjust-val">1</span>
+                  <button type="button" class="qty-adjust-btn"><span class="material-symbols-outlined">add</span></button>
+                </div>
+                <div class="cart-item-price-block">
+                  <span class="cart-item-price-label">Price</span>
+                  <span class="cart-item-price-val">$58.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mock Item 2 -->
+          <div class="cart-item-row mock-item">
+            <div class="cart-item-img-wrapper">
+              <img class="cart-item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKNsdYG8DNshWFpK6uPL-P5h6ZOj-jGLh-bb2j2JfRR_RkxJxoXOGLmjuMKvBgCDHIrtZs_9SxDY-EsfmRUKxbdHdYrux3mkxHDd8UchCn8Y-UOixw8IPGcgQi2f6BXZ1MeCBkc0RCKOhvjY9bWOnrga64k1D3LBgLK72ZktdmU8UnQao5FpxU71wstVQWS7toitPctxSaw8dhToJzjsNhtsVqF3QXkqh73O__JCaCWzzYwIAYZ6SSk4OdKdk2dcIJW5pvzPVTlmAM" alt="Artisan Heritage Pork Sausages" width="200" height="200" loading="lazy">
+            </div>
+            <div class="cart-item-details">
+              <div class="cart-item-header">
+                <div>
+                  <h3 class="cart-item-title">Artisan Heritage Pork Sausages</h3>
+                  <p class="cart-item-meta">Small Batch • Fennel &amp; Pepper</p>
+                </div>
+                <button type="button" class="cart-item-remove-btn"><span class="material-symbols-outlined">close</span></button>
+              </div>
+              <div class="cart-item-footer">
+                <div class="cart-item-quantity-selector">
+                  <button type="button" class="qty-adjust-btn"><span class="material-symbols-outlined">remove</span></button>
+                  <span class="qty-adjust-val">2</span>
+                  <button type="button" class="qty-adjust-btn"><span class="material-symbols-outlined">add</span></button>
+                </div>
+                <div class="cart-item-price-block">
+                  <span class="cart-item-price-label">Price</span>
+                  <span class="cart-item-price-val">$32.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mock Item 3 -->
+          <div class="cart-item-row mock-item">
+            <div class="cart-item-img-wrapper">
+              <img class="cart-item-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhGFoE6WPUwcEmBiOVsHXOynqBMJHxKG3XsktPwgbfLeC4Y3IFcIOhLqPWcDJz7ARurTlADAylUtTG8XoYkmtiEawfVq8Dv8c_UyFgyWPy7OICjzcpJG1HaYcsNXhmvZbwK_Od3xn2bVySU2L_xnZHwkzc4q2agIml7vc_y9Pio0QI_cAaiN6Bt2BcOyevhz6SEJbLopN10frwt0jrZ0HC1CniajuWKdDe3pBbG9oA_CpqG6y7PdX_y1EOBL5p2iFcv4h9AsJz9pa1" alt="Prime Cut Heritage Brisket" width="200" height="200" loading="lazy">
+            </div>
+            <div class="cart-item-details">
+              <div class="cart-item-header">
+                <div>
+                  <h3 class="cart-item-title">Prime Cut Heritage Brisket</h3>
+                  <p class="cart-item-meta">Whole Muscle • Pit Master's Choice</p>
+                </div>
+                <button type="button" class="cart-item-remove-btn"><span class="material-symbols-outlined">close</span></button>
+              </div>
+              <div class="cart-item-footer">
+                <div class="cart-item-quantity-selector">
+                  <button type="button" class="qty-adjust-btn"><span class="material-symbols-outlined">remove</span></button>
+                  <span class="qty-adjust-val">1</span>
+                  <button type="button" class="qty-adjust-btn"><span class="material-symbols-outlined">add</span></button>
+                </div>
+                <div class="cart-item-price-block">
+                  <span class="cart-item-price-label">Price</span>
+                  <span class="cart-item-price-val">$84.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Butcher's Quality Mark Seal -->
+      <div class="cart-inspect-stamp-panel">
+        <div class="cart-inspect-stamp">
+          <span class="stamp-text">Heritage<br>Quality<br>Inspected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary Sidebar -->
+    <aside class="cart-summary-sidebar">
+      <div class="summary-card">
+        <h2 class="summary-title">Order Summary</h2>
+        
+        <div class="summary-details">
+          <div class="summary-row">
+            <span class="summary-label">Subtotal</span>
+            <span class="summary-val">
+              {% if cart.item_count > 0 %}
+                {{ cart.total_price | money }}
+              {% else %}
+                $174.00
+              {% endif %}
+            </span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Artisan Shipping</span>
+            <span class="summary-val">
+              {% if cart.item_count > 0 %}
+                Free
+              {% else %}
+                $12.00
+              {% endif %}
+            </span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Estimated Tax</span>
+            <span class="summary-val">
+              {% if cart.item_count > 0 %}
+                Calculated at Checkout
+              {% else %}
+                $14.35
+              {% endif %}
+            </span>
+          </div>
+          
+          <div class="summary-row total-row">
+            <span class="total-label">Total</span>
+            <span class="total-val">
+              {% if cart.item_count > 0 %}
+                {{ cart.total_price | money }}
+              {% else %}
+                $200.35
+              {% endif %}
+            </span>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          {% if cart.item_count > 0 %}
+            <button type="submit" name="checkout" form="cart-form" class="btn checkout-btn">
+              Proceed to Checkout
+            </button>
+          {% else %}
+            <a href="/collections/all" class="btn checkout-btn">
+              Browse All Cuts
+            </a>
+          {% endif %}
+          <p class="summary-shipping-note">Shipping worldwide via climate-controlled courier</p>
+        </div>
+      </div>
+
+      <!-- Value Trust Cards -->
+      <div class="trust-card-item">
+        <span class="material-symbols-outlined trust-card-icon">verified</span>
+        <div>
+          <p class="trust-card-title">Heritage Guarantee</p>
+          <p class="trust-card-desc">Full transparency from farm to table.</p>
+        </div>
+      </div>
+      <div class="trust-card-item">
+        <span class="material-symbols-outlined trust-card-icon">eco</span>
+        <div>
+          <p class="trust-card-title">Compostable Packaging</p>
+          <p class="trust-card-desc">Zero-waste wool and paper insulation.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+{% stylesheet %}
+  .cart-page-section {
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: var(--spacing-section-gap-mobile) var(--page-margin);
+  }
+
+  @media (min-width: 768px) {
+    .cart-page-section {
+      padding: var(--spacing-section-gap) var(--page-margin);
+    }
+  }
+
+  .cart-page-header {
+    margin-bottom: 3.5rem;
+  }
+
+  .cart-title {
+    color: var(--color-on-surface);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .cart-subtitle {
+    font-family: var(--font-body-family);
+    font-size: 1.25rem;
+    color: var(--color-secondary);
+    font-style: italic;
+  }
+
+  .cart-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-gutter);
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .cart-grid {
+      grid-template-columns: repeat(12, 1fr);
+      gap: 3.5rem;
+    }
+  }
+
+  .cart-main-container {
+    position: relative;
+  }
+
+  @media (min-width: 1024px) {
+    .cart-main-container {
+      grid-column: span 8;
+    }
+  }
+
+  .butcher-paper {
+    background-color: #f5f5dc;
+    background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLsFkTdzROoOz7jUpqEn2a0w899NJIPEpPlNYFXAgS3TLRtOgOZozIbJQnq7GLCJvfw-W4Bj4B7ATLa8Pn1lPNvRBzrXL_LHfYdmRUSLVrfY0gLuIu-S5_lSVy32bnRVjFQN4-wsfx37k9iLOw2Lp-i80CNC9-Y22lTZKTXUz3c2oP7eiZVIt-zAjcEWZ4qsLqh5sj2OaWMBREjjBY0xUidPJEGH0o1-3G4HAg_2PSr5_xZ2puFq7JJyphxm');
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--style-border-radius);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 100px rgba(0, 0, 0, 0.05);
+    padding: 2.5rem;
+    overflow: hidden;
+  }
+
+  .paper-corner-fold {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4rem;
+    height: 4rem;
+    background-color: rgba(0, 0, 0, 0.08);
+    transform: rotate(-45deg) translate(50%, -50%);
+    transform-origin: top right;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .cart-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .cart-item-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    border-bottom: 1px solid rgba(27, 29, 14, 0.1);
+    padding-bottom: 3rem;
+  }
+
+  .cart-item-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  @media (min-width: 768px) {
+    .cart-item-row {
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+    }
+  }
+
+  .cart-item-img-wrapper {
+    width: 100%;
+    height: 12rem;
+    border-radius: var(--style-border-radius);
+    overflow: hidden;
+    background-color: rgba(27, 29, 14, 0.05);
+    padding: 0.25rem;
+    border: 1px solid rgba(27, 29, 14, 0.05);
+  }
+
+  @media (min-width: 768px) {
+    .cart-item-img-wrapper {
+      width: 12rem;
+      height: 12rem;
+      flex-shrink: 0;
+    }
+  }
+
+  .cart-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-item-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cart-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 2rem;
+  }
+
+  .cart-item-title {
+    font-family: var(--font-headline-family);
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: #1b1d0e !important;
+  }
+
+  .cart-item-meta {
+    font-family: var(--font-label-family);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #800020 !important;
+    margin-top: 0.25rem;
+  }
+
+  .cart-item-remove-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    color: rgba(27, 29, 14, 0.4) !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-item-remove-btn:hover {
+    color: #800020 !important;
+  }
+
+  .cart-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .cart-item-quantity-selector {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(27, 29, 14, 0.2);
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+  }
+
+  .qty-adjust-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    color: #1b1d0e !important;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.1s ease !important;
+  }
+
+  .qty-adjust-btn:hover {
+    color: #800020 !important;
+  }
+
+  .qty-adjust-btn:active {
+    transform: scale(0.9);
+  }
+
+  .qty-adjust-btn .material-symbols-outlined {
+    font-size: 1.125rem !important;
+  }
+
+  .qty-adjust-val {
+    font-family: var(--font-headline-family);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1b1d0e;
+  }
+
+  .cart-item-price-block {
+    text-align: right;
+  }
+
+  .cart-item-price-label {
+    display: block;
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(27, 29, 14, 0.6);
+    margin-bottom: 0.125rem;
+  }
+
+  .cart-item-price-val {
+    font-family: var(--font-headline-family);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #800020;
+  }
+
+  .cart-inspect-stamp-panel {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5rem;
+  }
+
+  .cart-inspect-stamp {
+    border: 2px dashed rgba(128, 0, 32, 0.3);
+    border-radius: 50%;
+    width: 6.5rem;
+    height: 6.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-12deg);
+    opacity: 0.4;
+    user-select: none;
+  }
+
+  .stamp-text {
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: #800020;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.3;
+    letter-spacing: 0.05em;
+  }
+
+  .cart-empty-notice-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 0;
+    border-bottom: 1px solid rgba(27, 29, 14, 0.15);
+    color: #1b1d0e;
+  }
+
+  .empty-box-icon {
+    font-size: 3rem !important;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+  }
+
+  .cart-empty-notice-banner p {
+    font-family: var(--font-body-family);
+    font-size: 1.125rem;
+    font-style: italic;
+  }
+
+  /* Sidebar styling */
+  .cart-summary-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .cart-summary-sidebar {
+      grid-column: span 4;
+    }
+  }
+
+  .summary-card {
+    background-color: var(--color-surface-container-high);
+    border: 1px solid rgba(228, 228, 204, 0.05);
+    padding: 2rem;
+    border-radius: var(--style-border-radius);
+  }
+
+  .summary-title {
+    color: var(--color-primary);
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(228, 228, 204, 0.15);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .summary-label {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+  }
+
+  .summary-val {
+    font-family: var(--font-headline-family);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .total-row {
+    border-top: 1px solid rgba(228, 228, 204, 0.15);
+    padding-top: 2rem;
+    margin-top: 1rem;
+    align-items: flex-end;
+  }
+
+  .total-label {
+    font-family: var(--font-headline-family);
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    letter-spacing: -0.01em;
+  }
+
+  .total-val {
+    font-family: var(--font-headline-family);
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  .summary-actions {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .checkout-btn {
+    width: 100% !important;
+    background-color: #800020 !important; /* Burgundy */
+    color: var(--color-secondary) !important;
+    font-family: var(--font-headline-family) !important;
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    padding: 1.25rem !important;
+    border-radius: var(--style-border-radius) !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .checkout-btn:hover {
+    background-color: #a30e2e !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .checkout-btn:active {
+    transform: translateY(0) !important;
+  }
+
+  .summary-shipping-note {
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: rgba(228, 228, 204, 0.4);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 0.25rem;
+  }
+
+  .trust-card-item {
+    background-color: var(--color-surface-container-low);
+    border: 1px solid rgba(228, 228, 204, 0.05);
+    padding: 1.5rem;
+    border-radius: var(--style-border-radius);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .trust-card-icon {
+    color: var(--color-primary);
+    font-size: 2rem !important;
+  }
+
+  .trust-card-title {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    margin-bottom: 0.125rem;
+  }
+
+  .trust-card-desc {
+    font-family: var(--font-body-family);
+    font-size: 0.875rem;
+    color: var(--color-secondary);
+    opacity: 0.8;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cart Page",
+  "settings": []
+}
+{% endschema %}

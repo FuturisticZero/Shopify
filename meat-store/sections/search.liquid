@@ -1,0 +1,425 @@
+<div class="search-page-section">
+  <!-- Search Header Panel -->
+  <div class="search-header-panel">
+    <h1 class="search-page-title">
+      {% if search.performed %}
+        Search Results
+      {% else %}
+        Search Our Pantry
+      {% endif %}
+    </h1>
+
+    <div class="search-page-form-wrapper">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page-form">
+        <!-- Default to products search for cleaner storefront experience, but keep option open -->
+        <input type="hidden" name="type" value="product">
+        
+        <span class="material-symbols-outlined search-form-icon">search</span>
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="Search for cuts, boxes, recipes..."
+          class="search-form-input"
+          aria-label="Search"
+        >
+        <button type="submit" class="btn search-form-submit">Search</button>
+      </form>
+    </div>
+
+    {% if search.performed %}
+      <p class="search-info-message">
+        {% if search.results_count == 0 %}
+          We found no results for <strong class="text-highlight">"{{ search.terms | escape }}"</strong>. Try searching for "Ribeye", "Lamb", or "Chops".
+        {% else %}
+          We found {{ search.results_count }} results for <strong class="text-highlight">"{{ search.terms | escape }}"</strong>.
+        {% endif %}
+      </p>
+    {% endif %}
+  </div>
+
+  <!-- Search Results Grid -->
+  {% if search.performed and search.results_count > 0 %}
+    <div class="search-results-grid">
+      {% paginate search.results by 12 %}
+        {% for result in search.results %}
+          <!-- Determine result type -->
+          {% if result.object_type == 'product' %}
+            <!-- Product Card (Matches collection page styling) -->
+            <div class="search-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+              <div class="relative aspect-square overflow-hidden image-container-dark">
+                {% if result.compare_at_price > result.price %}
+                  <div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label-caps text-label-caps px-3 py-1 uppercase">Sale</div>
+                {% elsif result.available == false %}
+                  <div class="absolute top-4 left-4 z-10 bg-surface-container-highest text-on-surface-variant font-label-caps text-label-caps px-3 py-1 uppercase">Sold Out</div>
+                {% else %}
+                  {% for tag in result.tags %}
+                    {% if tag contains 'Aged' or tag contains 'organic' or tag contains 'Organic' or tag contains 'Limited' or tag contains 'Signature' %}
+                      <div class="absolute top-4 left-4 z-10 bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 uppercase">{{ tag }}</div>
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+
+                <a href="{{ result.url }}" class="product-card-image-link">
+                  {% if result.featured_image %}
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="{{ result.featured_image | image_url: width: 600 }}" alt="{{ result.featured_image.alt | escape }}" width="300" height="300" loading="lazy">
+                  {% else %}
+                    {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 placeholder-svg' }}
+                  {% endif %}
+                </a>
+
+                {% if result.available %}
+                  <form method="post" action="{{ routes.cart_add_url }}" class="quick-add-form-nav">
+                    <input type="hidden" name="id" value="{{ result.variants.first.id }}" />
+                    <button type="submit" class="absolute bottom-4 right-4 bg-primary-container text-on-primary-container p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 quick-add-btn-circle" aria-label="Add to cart">
+                      <span class="material-symbols-outlined">add_shopping_cart</span>
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+              
+              <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+                <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">{{ result.type | default: "Heritage Cut" }}</span>
+                <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="{{ result.url }}">{{ result.title }}</a></h3>
+                <p class="font-body-md text-body-md italic mb-4 opacity-80">{{ result.description | strip_html | truncatewords: 8 }}</p>
+                <div class="mt-auto flex justify-between items-center">
+                  <span class="font-headline-md text-headline-md text-burgundy">{{ result.price | money }}</span>
+                  <span class="font-label-caps text-label-caps opacity-60">
+                    {% if result.variants.first.weight > 0 %}
+                      PER {{ result.variants.first.weight | weight_with_unit }}
+                    {% else %}
+                      EACH
+                    {% endif %}
+                  </span>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <!-- Non-Product (Article / Page) Card styled to match theme -->
+            <div class="search-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+              <div class="relative aspect-square overflow-hidden image-container-dark">
+                <div class="absolute top-4 left-4 z-10 bg-surface-container-highest text-secondary font-label-caps text-label-caps px-3 py-1 uppercase">
+                  {% if result.object_type == 'article' %}
+                    Journal
+                  {% else %}
+                    Page
+                  {%   endif %}
+                </div>
+
+                <a href="{{ result.url }}" class="product-card-image-link">
+                  {% assign featured_image = result.image | default: result.featured_image %}
+                  {% if featured_image %}
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="{{ featured_image | image_url: width: 600 }}" alt="{{ featured_image.alt | escape }}" width="300" height="300" loading="lazy">
+                  {% else %}
+                    <!-- Show background pattern placeholder if no image exists -->
+                    <div class="w-full h-full flex items-center justify-center bg-surface-container-lowest">
+                      <span class="material-symbols-outlined text-[64px] opacity-20">article</span>
+                    </div>
+                  {% endif %}
+                </a>
+              </div>
+              
+              <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+                <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">
+                  {% if result.object_type == 'article' %}
+                    Heritage Journal
+                  {% else %}
+                    Information
+                  {%   endif %}
+                </span>
+                <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="{{ result.url }}">{{ result.title }}</a></h3>
+                <p class="font-body-md text-body-md italic mb-4 opacity-80">{{ result.content | strip_html | truncatewords: 10 }}</p>
+                <div class="mt-auto">
+                  <a href="{{ result.url }}" class="search-read-more-link">
+                    {% if result.object_type == 'article' %}
+                      Read Article
+                    {% else %}
+                      View Page
+                    {% endif %}
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if paginate.pages > 1 %}
+          <div class="pagination-container">
+            {{ paginate | default_pagination }}
+          </div>
+        {% endif %}
+      {% endpaginate %}
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .search-page-section {
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: var(--spacing-section-gap-mobile) var(--page-margin);
+  }
+
+  @media (min-width: 768px) {
+    .search-page-section {
+      padding: var(--spacing-section-gap) var(--page-margin);
+    }
+  }
+
+  .search-header-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 3.5rem;
+    gap: 1.5rem;
+  }
+
+  .search-page-title {
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .search-page-form-wrapper {
+    width: 100%;
+    max-width: 32rem;
+  }
+
+  .search-page-form {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-surface-container-high);
+    padding: 0.5rem;
+    border-radius: var(--style-border-radius);
+    border: 1px solid rgba(228, 228, 204, 0.1);
+  }
+
+  .search-form-icon {
+    font-size: 1.5rem;
+    color: var(--color-secondary);
+    margin: 0 0.75rem;
+  }
+
+  .search-form-input {
+    flex-grow: 1;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0.5rem 0 !important;
+    font-family: var(--font-body-family);
+    font-size: 1rem;
+    color: var(--color-foreground);
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .search-form-input::placeholder {
+    color: var(--color-outline);
+    opacity: 0.6;
+  }
+
+  .search-form-submit {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  .search-info-message {
+    font-family: var(--font-body-family);
+    font-size: 1.125rem;
+    color: var(--color-on-surface-variant);
+    max-width: 28rem;
+  }
+
+  .text-highlight {
+    color: var(--color-primary);
+  }
+
+  .search-results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-gutter);
+  }
+
+  @media (min-width: 640px) {
+    .search-results-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .search-results-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .search-results-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .search-product-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--style-border-radius);
+    overflow: hidden;
+    transition: border-color 0.4s ease;
+  }
+
+  .search-product-card.border-outline {
+    border: 1px solid rgba(228, 228, 204, 0.05);
+  }
+
+  .search-product-card:hover {
+    border-color: rgba(228, 228, 204, 0.25);
+  }
+
+  .image-container-dark {
+    position: relative;
+    background-color: var(--color-surface-container-lowest);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+
+  .product-card-image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hover-effect img {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .search-product-card:hover .hover-effect img,
+  .search-product-card:hover img {
+    transform: none !important;
+  }
+
+  .quick-add-btn-circle {
+    border-radius: 50% !important;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .search-product-card:hover .quick-add-btn-circle {
+    opacity: 1 !important;
+    transform: translate(0, 0) !important;
+  }
+
+  .paper-bg {
+    background-color: #f5f5dc; /* Cream parchment fallback */
+    background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLsFkTdzROoOz7jUpqEn2a0w899NJIPEpPlNYFXAgS3TLRtOgOZozIbJQnq7GLCJvfw-W4Bj4B7ATLa8Pn1lPNvRBzrXL_LHfYdmRUSLVrfY0gLuIu-S5_lSVy32bnRVjFQN4-wsfx37k9iLOw2Lp-i80CNC9-Y22lTZKTXUz3c2oP7eiZVIt-zAjcEWZ4qsLqh5sj2OaWMBREjjBY0xUidPJEGH0o1-3G4HAg_2PSr5_xZ2puFq7JJyphxm');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 1.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+  }
+
+  .text-surface-container-lowest {
+    color: #1c1b1b !important; /* Dark charcoal text color */
+  }
+
+  .text-surface-container-lowest h3 a {
+    color: #0e0e0e !important;
+    text-decoration: none;
+    font-family: var(--font-headline-family);
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+  }
+
+  .text-surface-container-lowest h3 a:hover {
+    color: #800020 !important; /* burgundy hover */
+  }
+
+  .text-burgundy {
+    color: #800020 !important;
+    font-family: var(--font-headline-family);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+
+  .text-burgundy\/60 {
+    color: rgba(128, 0, 32, 0.6) !important;
+  }
+
+  .search-read-more-link {
+    display: inline-block;
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #800020;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+  }
+
+  .search-read-more-link:hover {
+    color: #5d0016;
+  }
+
+  .pagination-container {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+    gap: 0.5rem;
+  }
+
+  .pagination-container a,
+  .pagination-container .current {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.5rem;
+    border-radius: var(--style-border-radius);
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--color-outline-variant);
+    color: var(--color-on-surface-variant);
+    transition: all 0.3s ease;
+  }
+
+  .pagination-container span:not(.current) {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .pagination-container a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .pagination-container .current {
+    background-color: var(--color-primary-container);
+    color: var(--color-secondary);
+    border-color: var(--color-primary-container);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Search Results",
+  "settings": []
+}
+{% endschema %}

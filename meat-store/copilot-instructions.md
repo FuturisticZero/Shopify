@@ -1,0 +1,1 @@
+/Users/bradleybartell/GitHub/Shopify meat theme/meat-store/AGENTS.md

@@ -1,0 +1,469 @@
+<div class="bento-section">
+  <div class="bento-header">
+    <div>
+      <h2 class="bento-heading">{{ section.settings.heading }}</h2>
+      <div class="bento-heading-line"></div>
+    </div>
+    {% if section.settings.view_all_link != blank %}
+      <a href="{{ section.settings.view_all_link }}" class="bento-view-all">
+        {{ section.settings.view_all_text }}
+        <span class="material-symbols-outlined bento-arrow">arrow_forward</span>
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="bento-grid">
+    <!-- Card 1: Dry-Aged Selection (2x2) -->
+    <div class="bento-card bento-card--large border-outline">
+      <div class="bento-card-bg" style="background-image: url('{% if section.settings.card_1_image != blank %}{{ section.settings.card_1_image | image_url: width: 1000 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBqDQ5U_GtTuVfyhOCS_kmQ5zR0E93n_EPFiCyPHquIk0xJNXIiGW9do5MI19D2b0iKZbMDWYmFoDh_rbsWz7k7x2hG8yDuvyOPSwlShgCv8_PwUb6ZzvHoG5MWveAGaVmfmObGBdR5XLWxlqqiHlzvut7o-X0R0L3GasNJHM7-Vv8ohMuzW1YgYQqs38XFzjBRumWVjxKH1l8MKD_ynWbE_uZBC65zETKWPg5USE0uUmZqolgPJqH7Kx7zBOyKlj0MrfqLQ02X6r7Y{% endif %}');"></div>
+      <div class="bento-card-overlay"></div>
+      <div class="bento-card-content">
+        {% if section.settings.card_1_badge != blank %}
+          <span class="bento-badge">{{ section.settings.card_1_badge }}</span>
+        {% endif %}
+        <h3 class="bento-card-title">{{ section.settings.card_1_heading }}</h3>
+        {% if section.settings.card_1_link != blank %}
+          <a href="{{ section.settings.card_1_link }}" class="bento-card-link">{{ section.settings.card_1_link_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Card 2: Curated Boxes (2x1) -->
+    <div class="bento-card bento-card--wide border-outline">
+      <div class="bento-card-bg" style="background-image: url('{% if section.settings.card_2_image != blank %}{{ section.settings.card_2_image | image_url: width: 1000 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuDwGsEiU6AjM6ULZwGj831qjZeNsBWnkciCrHLepCcV6iju_qhUZRByMt2gZLedHx50SyYwnpjB8-YMUmH9GWJa4jzoeP56f6H7d9TQCkr4fizQSVD8DSrkhvwaYlMUlg43utFY9qe51L_Bm2TGyfIfpm5eIkH_kT6JxZQPyXm1erfVPHx1hqzO9VOHQGJZVUjfHwJZiGGn4hTaLvY6pm97G1S4t9jYDLLICyvfroSqyegNMs6AdxX0fBzAFuDTxNq7FyyGD-3JvR1u{% endif %}');"></div>
+      <div class="bento-card-overlay"></div>
+      <div class="bento-card-content">
+        <h3 class="bento-card-title">{{ section.settings.card_2_heading }}</h3>
+        {% if section.settings.card_2_sub != blank %}
+          <p class="bento-card-description">{{ section.settings.card_2_sub }}</p>
+        {% endif %}
+        {% if section.settings.card_2_link != blank %}
+          <a href="{{ section.settings.card_2_link }}" class="bento-card-link">{{ section.settings.card_2_link_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Card 3: The Pantry (1x1) -->
+    <div class="bento-card bento-card--square border-outline">
+      <div class="bento-card-bg" style="background-image: url('{% if section.settings.card_3_image != blank %}{{ section.settings.card_3_image | image_url: width: 600 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuB5AmCSv90LSyslpG29R4Jgjqjf6TzphxiWG8tXWgM3SUr4DN5A3N9pzUVgyS2Vw7qYY5_PYg_pDFM1BYDXM3oKf5NWgcaMbqrd08_8rlyCFMgIwVZ5xElPiWpRrN0ybFJItPkQ5oKyKuor5r0nt5OM9Mp3hrSUVDEBmz89yv0ge4Y0BZA3KOemO7aeE9XEn3Zk-wJuT0T6D4h-8MhjrTwwDKLi11nw2rGT7VBQ0WMMQKLNXkBWWud6BrCo6IrRZOsd6j1Xi_KLNsFy{% endif %}');"></div>
+      <div class="bento-card-overlay"></div>
+      <div class="bento-card-content">
+        <h3 class="bento-card-title">{{ section.settings.card_3_heading }}</h3>
+        {% if section.settings.card_3_link != blank %}
+          <a href="{{ section.settings.card_3_link }}" class="bento-card-link">{{ section.settings.card_3_link_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Card 4: Highlight / Wagyu Gold (1x1 highlight) -->
+    <div class="bento-card bento-card--highlight bg-primary-container">
+      <div class="bento-highlight-content">
+        <span class="material-symbols-outlined bento-star-icon">stars</span>
+        <h3 class="bento-card-title text-primary">{{ section.settings.card_4_heading }}</h3>
+        {% if section.settings.card_4_sub != blank %}
+          <p class="bento-card-description text-on-primary-container">{{ section.settings.card_4_sub }}</p>
+        {% endif %}
+        {% if section.settings.card_4_link != blank %}
+          <a href="{{ section.settings.card_4_link }}" class="btn bento-btn">{{ section.settings.card_4_link_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .bento-section {
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
+  }
+
+  .bento-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+
+  .bento-heading {
+    margin-bottom: 0.5rem;
+  }
+
+  .bento-heading-line {
+    width: 6rem;
+    height: 3px;
+    background-color: var(--color-primary-container);
+  }
+
+  .bento-view-all {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .bento-view-all:hover {
+    color: var(--color-primary-container);
+  }
+
+  .bento-arrow {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+  }
+
+  .bento-view-all:hover .bento-arrow {
+    transform: translateX(4px);
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .bento-grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 280px;
+    }
+  }
+
+  .bento-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-radius: var(--style-border-radius);
+    transition: border-color 0.4s ease;
+  }
+
+  .border-outline {
+    border: 1px solid rgba(228, 228, 204, 0.1);
+  }
+
+  .bento-card--large {
+    min-height: 400px;
+  }
+
+  .bento-card--wide {
+    min-height: 250px;
+  }
+
+  .bento-card--square,
+  .bento-card--highlight {
+    min-height: 250px;
+  }
+
+  @media (min-width: 768px) {
+    .bento-card--large {
+      grid-column: span 2;
+      grid-row: span 2;
+      min-height: auto;
+    }
+
+    .bento-card--wide {
+      grid-column: span 2;
+      grid-row: span 1;
+      min-height: auto;
+    }
+
+    .bento-card--square {
+      grid-column: span 1;
+      grid-row: span 1;
+      min-height: auto;
+    }
+
+    .bento-card--highlight {
+      grid-column: span 1;
+      grid-row: span 1;
+      min-height: auto;
+    }
+  }
+
+  .bento-card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transform: none !important;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bento-card:hover .bento-card-bg {
+    transform: none !important;
+  }
+
+  .bento-card:hover.border-outline {
+    border-color: rgba(228, 228, 204, 0.3);
+  }
+
+  .bento-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(19, 19, 19, 0.3), rgba(19, 19, 19, 0.8));
+    z-index: 1;
+    transition: opacity 0.5s ease;
+  }
+
+  .bento-card:hover .bento-card-overlay {
+    background: linear-gradient(to bottom, rgba(19, 19, 19, 0.2), rgba(19, 19, 19, 0.7));
+  }
+
+  .bento-card-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bento-badge {
+    background-color: var(--color-primary-container);
+    color: var(--color-foreground);
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--style-border-radius);
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+
+  .bento-card-title {
+    font-family: var(--font-headline-family);
+    color: var(--color-foreground);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .bento-card--large .bento-card-title {
+    font-size: 1.75rem;
+  }
+
+  .bento-card--wide .bento-card-title,
+  .bento-card--square .bento-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bento-card-description {
+    font-family: var(--font-body-family);
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.8;
+    margin-bottom: 1.25rem;
+    max-width: 20rem;
+  }
+
+  .bento-card-link {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-foreground);
+    padding-bottom: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .bento-card-link:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .bento-card--highlight {
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .bento-highlight-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bento-star-icon {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+  }
+
+  .bento-card--highlight .bento-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bento-card--highlight .bento-card-description {
+    color: var(--color-on-primary-container);
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+  }
+
+  .bento-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.75rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Featured Bento Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured Collections"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View All Text",
+      "default": "View All Categories"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View All Link"
+    },
+    {
+      "type": "header",
+      "content": "Card 1: Large Bento (2x2)"
+    },
+    {
+      "type": "text",
+      "id": "card_1_heading",
+      "label": "Card 1 Heading",
+      "default": "Dry-Aged Cellar"
+    },
+    {
+      "type": "text",
+      "id": "card_1_badge",
+      "label": "Card 1 Badge",
+      "default": "PREMIUM RESERVE"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_1_image",
+      "label": "Card 1 Image"
+    },
+    {
+      "type": "url",
+      "id": "card_1_link",
+      "label": "Card 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "card_1_link_text",
+      "label": "Card 1 Link Text",
+      "default": "Explore Cuts"
+    },
+    {
+      "type": "header",
+      "content": "Card 2: Wide Bento (2x1)"
+    },
+    {
+      "type": "text",
+      "id": "card_2_heading",
+      "label": "Card 2 Heading",
+      "default": "Curated Boxes"
+    },
+    {
+      "type": "text",
+      "id": "card_2_sub",
+      "label": "Card 2 Subtitle",
+      "default": "Hand-picked selections for the ultimate culinary experience."
+    },
+    {
+      "type": "image_picker",
+      "id": "card_2_image",
+      "label": "Card 2 Image"
+    },
+    {
+      "type": "url",
+      "id": "card_2_link",
+      "label": "Card 2 Link"
+    },
+    {
+      "type": "text",
+      "id": "card_2_link_text",
+      "label": "Card 2 Link Text",
+      "default": "Shop Boxes"
+    },
+    {
+      "type": "header",
+      "content": "Card 3: Square Bento (1x1)"
+    },
+    {
+      "type": "text",
+      "id": "card_3_heading",
+      "label": "Card 3 Heading",
+      "default": "The Pantry"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_3_image",
+      "label": "Card 3 Image"
+    },
+    {
+      "type": "url",
+      "id": "card_3_link",
+      "label": "Card 3 Link"
+    },
+    {
+      "type": "text",
+      "id": "card_3_link_text",
+      "label": "Card 3 Link Text",
+      "default": "Browse"
+    },
+    {
+      "type": "header",
+      "content": "Card 4: Highlight Bento (1x1)"
+    },
+    {
+      "type": "text",
+      "id": "card_4_heading",
+      "label": "Card 4 Heading",
+      "default": "Wagyu Gold"
+    },
+    {
+      "type": "text",
+      "id": "card_4_sub",
+      "label": "Card 4 Subtitle",
+      "default": "A5 Japanese Imports. Limited availability."
+    },
+    {
+      "type": "url",
+      "id": "card_4_link",
+      "label": "Card 4 Link"
+    },
+    {
+      "type": "text",
+      "id": "card_4_link_text",
+      "label": "Card 4 Link Text",
+      "default": "Secure My Cut"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Bento Grid"
+    }
+  ]
+}
+{% endschema %}

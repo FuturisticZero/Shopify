@@ -1,0 +1,822 @@
+<header class="header-nav-section">
+  <div class="header-nav-container">
+    <!-- Mobile Hamburger Menu Button -->
+    <button class="header-hamburger-btn" aria-label="Open menu" onclick="toggleMobileNav()">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="header-logo">
+      <a href="{{ routes.root_url }}">{{ shop.name }}</a>
+    </div>
+
+    <!-- Desktop Navigation Menu -->
+    <div class="header-menu-desktop">
+      {% for link in section.settings.menu.links %}
+        {% if link.links != blank %}
+          <div class="menu-item-with-dropdown">
+            <a class="menu-link-item {% if link.active or link.child_active %}menu-link-item--active{% endif %}" href="{{ link.url }}">
+              {{ link.title }}
+              <span class="material-symbols-outlined dropdown-caret-icon">keyboard_arrow_down</span>
+            </a>
+            <div class="dropdown-menu-container">
+              {% for childlink in link.links %}
+                <a class="dropdown-link-item {% if childlink.active %}dropdown-link-item--active{% endif %}" href="{{ childlink.url }}">
+                  {{ childlink.title }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% else %}
+          <a class="menu-link-item {% if link.active %}menu-link-item--active{% endif %}" href="{{ link.url }}">
+            {{ link.title }}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="header-actions">
+      <!-- Search bar -->
+      <div class="header-search-bar">
+        <form action="{{ routes.search_url }}" method="get" class="search-nav-form">
+          <span class="material-symbols-outlined search-nav-icon">search</span>
+          <input type="text" name="q" class="search-nav-input" placeholder="Search our pantry..." value="{{ search.terms | escape }}">
+        </form>
+      </div>
+
+      <div class="header-buttons-wrapper">
+        {% if shop.customer_accounts_enabled %}
+          <a class="nav-action-btn" href="{{ routes.account_url }}" aria-label="Account">
+            <span class="material-symbols-outlined">person</span>
+          </a>
+        {% endif %}
+
+        <a class="nav-action-btn relative-badge" href="{{ routes.cart_url }}" aria-label="Cart">
+          <span class="material-symbols-outlined">shopping_cart</span>
+          <span class="nav-badge-count">{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Navigation Drawer Overlay -->
+<div class="mobile-nav-overlay" id="MobileNavOverlay">
+  <div class="mobile-nav-backdrop" onclick="toggleMobileNav()"></div>
+  <nav class="mobile-nav-drawer butcher-paper" id="MobileNavDrawer">
+    <!-- Drawer Header -->
+    <div class="mobile-drawer-header">
+      <span class="mobile-drawer-title">Menu</span>
+      <button aria-label="Close menu" class="mobile-drawer-close-btn" onclick="toggleMobileNav()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    
+    <!-- Navigation Links -->
+    <div class="mobile-drawer-links">
+      {% for link in section.settings.menu.links %}
+        {% if link.links != blank %}
+          <div class="mobile-drawer-accordion {% if link.active or link.child_active %}open{% endif %}">
+            <button class="mobile-accordion-toggle" onclick="toggleMobileAccordion(this)">
+              <div class="mobile-link-left">
+                <span class="mobile-link-text">{{ link.title }}</span>
+              </div>
+              <span class="material-symbols-outlined accordion-caret">expand_more</span>
+            </button>
+            <div class="mobile-accordion-content" style="{% if link.active or link.child_active %}max-height: none;{% endif %}">
+              <a class="mobile-submenu-link {% if link.active %}active{% endif %}" href="{{ link.url }}">Shop All {{ link.title }}</a>
+              {% for childlink in link.links %}
+                <a class="mobile-submenu-link {% if childlink.active %}active{% endif %}" href="{{ childlink.url }}">
+                  {{ childlink.title }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% else %}
+          <a class="mobile-drawer-link-item group {% if link.active or link.child_active %}active{% endif %}" href="{{ link.url }}">
+            <div class="mobile-link-left">
+              <span class="mobile-link-text">{{ link.title }}</span>
+            </div>
+            <span class="material-symbols-outlined mobile-link-arrow">arrow_forward_ios</span>
+          </a>
+        {% endif %}
+      {% endfor %}
+
+      {% if shop.customer_accounts_enabled %}
+        <a class="mobile-drawer-link-item group" href="{{ routes.account_url }}">
+          <div class="mobile-link-left">
+            <span class="mobile-link-text">Account</span>
+          </div>
+          <span class="material-symbols-outlined mobile-link-arrow">arrow_forward_ios</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="mobile-drawer-footer">
+      <div class="mobile-drawer-newsletter">
+        <h4 class="mobile-footer-heading">Join the Registry</h4>
+        <p class="mobile-footer-desc">Receive exclusive access to dry-aged reserves and limited heritage breeds.</p>
+        {% form 'customer', class: 'mobile-newsletter-form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="mobile-newsletter-input-wrapper">
+            <input type="email" name="contact[email]" class="mobile-newsletter-input" placeholder="Your Email Address" required>
+            <button type="submit" class="mobile-newsletter-submit">Join</button>
+          </div>
+        {% endform %}
+      </div>
+
+      <div class="mobile-drawer-socials">
+        <div class="mobile-social-icons">
+          <a href="#" class="mobile-social-icon-btn" aria-label="Instagram">
+            <span class="material-symbols-outlined">photo_camera</span>
+          </a>
+          <a href="#" class="mobile-social-icon-btn" aria-label="Facebook">
+            <span class="material-symbols-outlined">qr_code_2</span>
+          </a>
+        </div>
+        <p class="mobile-copyright-text">
+          &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. Artisanal Excellence.
+        </p>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<script>
+  // Sticky and translucent header on scroll
+  window.addEventListener('scroll', () => {
+    const header = document.querySelector('.header-nav-section');
+    if (header) {
+      if (window.scrollY > 50) {
+        header.classList.add('header-nav-section--scrolled');
+      } else {
+        header.classList.remove('header-nav-section--scrolled');
+      }
+    }
+  });
+
+  // Mobile Drawer Toggle Handler
+  function toggleMobileNav() {
+    const overlay = document.getElementById('MobileNavOverlay');
+    const drawer = document.getElementById('MobileNavDrawer');
+    if (overlay.classList.contains('mobile-nav-overlay--open')) {
+      drawer.style.transform = 'translateX(-100%)';
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.classList.remove('mobile-nav-overlay--open');
+      }, 300);
+    } else {
+      overlay.classList.add('mobile-nav-overlay--open');
+      overlay.offsetWidth; // Force layout recalculation
+      overlay.style.opacity = '1';
+      drawer.style.transform = 'translateX(0)';
+    }
+  }
+
+  // Mobile Accordion Dropdown Handler
+  function toggleMobileAccordion(btn) {
+    const parent = btn.parentElement;
+    const content = btn.nextElementSibling;
+    if (parent.classList.contains('open')) {
+      parent.classList.remove('open');
+      content.style.maxHeight = '0';
+    } else {
+      parent.classList.add('open');
+      // If it was loaded dynamically or inline, use scrollHeight
+      content.style.maxHeight = content.scrollHeight + 'px';
+    }
+  }
+</script>
+
+{% stylesheet %}
+  .header-nav-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: var(--color-background);
+    border-bottom: 1px solid rgba(228, 228, 204, 0.1);
+    transition: padding 0.4s ease, background-color 0.4s ease, box-shadow 0.4s ease;
+    padding: 1.5rem 0;
+  }
+
+  .header-nav-section--scrolled {
+    padding: 1rem 0;
+    background-color: rgba(19, 19, 19, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .header-nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
+  }
+
+  /* Mobile Hamburger button styling */
+  .header-hamburger-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    color: var(--color-foreground) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+  }
+
+  .header-hamburger-btn:hover {
+    color: var(--color-primary);
+  }
+
+  .header-hamburger-btn .material-symbols-outlined {
+    font-size: 2rem !important;
+  }
+
+  @media (min-width: 768px) {
+    .header-hamburger-btn {
+      display: none !important;
+    }
+  }
+
+  .header-logo a {
+    font-family: var(--font-headline-family);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .header-logo a:hover {
+    color: #ffffff;
+  }
+
+  .header-menu-desktop {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .header-menu-desktop {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+  }
+
+  .menu-link-item {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    text-decoration: none;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .menu-link-item:hover,
+  .menu-link-item--active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .menu-item-with-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .dropdown-caret-icon {
+    font-size: 1rem !important;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .menu-item-with-dropdown:hover .dropdown-caret-icon {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    background-color: var(--color-surface-container-highest);
+    min-width: 12.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(228, 228, 204, 0.1);
+    border-radius: var(--style-border-radius);
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 100;
+  }
+
+  /* Hover Bridge to prevent dropdown closing when moving mouse from link to menu */
+  .dropdown-menu-container::before {
+    content: '';
+    position: absolute;
+    top: -0.5rem;
+    left: 0;
+    width: 100%;
+    height: 0.5rem;
+  }
+
+  .menu-item-with-dropdown:hover .dropdown-menu-container {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-link-item {
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-align: left;
+    letter-spacing: 0.05em;
+  }
+
+  .dropdown-link-item:hover,
+  .dropdown-link-item--active {
+    background-color: rgba(228, 228, 204, 0.05);
+    color: var(--color-primary) !important;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .header-search-bar {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .header-search-bar {
+      display: block;
+    }
+  }
+
+  .search-nav-form {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-surface-container-high);
+    padding: 0.5rem 1rem;
+    border-radius: var(--style-border-radius);
+    border: 1px solid rgba(228, 228, 204, 0.05);
+  }
+
+  .search-nav-icon {
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+    margin-right: 0.5rem;
+  }
+
+  .search-nav-input {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    color: var(--color-foreground);
+    width: 10rem;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .search-nav-input::placeholder {
+    color: var(--color-outline);
+    opacity: 0.6;
+  }
+
+  .header-buttons-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .nav-action-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-foreground);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+
+  .nav-action-btn:hover {
+    color: var(--color-primary);
+    transform: scale(1.05);
+  }
+
+  .nav-action-btn:active {
+    transform: scale(0.95);
+  }
+
+  .nav-action-btn .material-symbols-outlined {
+    font-size: 1.5rem;
+  }
+
+  .relative-badge {
+    position: relative;
+  }
+
+  .nav-badge-count {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: var(--color-primary-container);
+    color: var(--color-secondary);
+    font-size: 0.625rem;
+    font-weight: 700;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-background);
+  }
+
+  /* Mobile Navigation Overlay Drawer Styles */
+  .mobile-nav-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-nav-overlay--open {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .mobile-nav-backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    cursor: pointer;
+  }
+
+  .mobile-nav-drawer {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    z-index: 10;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+  }
+
+  .mobile-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .mobile-drawer-title {
+    font-family: var(--font-headline-family);
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #1b1d0e;
+    letter-spacing: -0.02em;
+  }
+
+  .mobile-drawer-close-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #1b1d0e !important;
+    cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+  }
+
+  .mobile-drawer-close-btn .material-symbols-outlined {
+    font-size: 2rem !important;
+  }
+
+  .mobile-drawer-links {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1.5rem;
+  }
+
+  .mobile-drawer-link-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(27, 29, 14, 0.1);
+    text-decoration: none;
+    color: #1b1d0e;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-drawer-link-item:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-link-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .mobile-link-icon {
+    font-size: 1.5rem !important;
+    color: rgba(27, 29, 14, 0.4);
+    transition: color 0.3s ease;
+  }
+
+  .mobile-drawer-link-item.active .mobile-link-icon,
+  .mobile-drawer-link-item:hover .mobile-link-icon {
+    color: #800020 !important;
+  }
+
+  .mobile-link-text {
+    font-family: var(--font-headline-family);
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .mobile-drawer-link-item.active .mobile-link-text,
+  .mobile-drawer-link-item:hover .mobile-link-text {
+    transform: translateX(8px);
+    color: #800020 !important;
+  }
+
+  .mobile-link-arrow {
+    font-size: 1rem !important;
+    color: rgba(27, 29, 14, 0.2);
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  .mobile-drawer-link-item.active .mobile-link-arrow,
+  .mobile-drawer-link-item:hover .mobile-link-arrow {
+    color: #800020 !important;
+    transform: translateX(4px);
+  }
+
+  /* Accordion sub-navigation styles */
+  .mobile-drawer-accordion {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-accordion-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(27, 29, 14, 0.1);
+    background: transparent !important;
+    border: none !important;
+    color: #1b1d0e !important;
+    cursor: pointer !important;
+    text-align: left;
+    width: 100%;
+  }
+
+  .mobile-accordion-toggle:hover .mobile-link-text,
+  .mobile-drawer-accordion.open .mobile-link-text {
+    color: #800020 !important;
+  }
+
+  .mobile-accordion-toggle:hover .mobile-link-icon,
+  .mobile-drawer-accordion.open .mobile-link-icon {
+    color: #800020 !important;
+  }
+
+  .accordion-caret {
+    font-size: 1.5rem !important;
+    color: rgba(27, 29, 14, 0.4);
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .mobile-accordion-toggle:hover .accordion-caret {
+    color: #800020 !important;
+  }
+
+  .mobile-drawer-accordion.open .accordion-caret {
+    color: #800020 !important;
+    transform: rotate(180deg);
+  }
+
+  .mobile-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-left: 2.5rem;
+  }
+
+  .mobile-drawer-accordion.open .mobile-accordion-content {
+    border-bottom: 1px solid rgba(27, 29, 14, 0.05);
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+  }
+
+  .mobile-submenu-link {
+    font-family: var(--font-headline-family);
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: rgba(27, 29, 14, 0.6) !important;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: block;
+  }
+
+  .mobile-submenu-link:hover,
+  .mobile-submenu-link.active {
+    color: #800020 !important;
+    transform: translateX(4px);
+  }
+
+  .mobile-drawer-footer {
+    margin-top: auto;
+    padding: 3rem 1.5rem 2rem;
+    background-color: rgba(27, 29, 14, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .mobile-drawer-newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mobile-footer-heading {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #800020;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .mobile-footer-desc {
+    font-family: var(--font-body-family);
+    font-size: 0.875rem;
+    color: #1b1d0e;
+    opacity: 0.8;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .mobile-newsletter-form {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .mobile-newsletter-input-wrapper {
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(27, 29, 14, 0.15);
+    border-radius: var(--style-border-radius);
+    padding: 0.125rem;
+  }
+
+  .mobile-newsletter-input {
+    flex-grow: 1;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0.75rem 1rem !important;
+    font-family: var(--font-body-family);
+    font-size: 0.875rem;
+    color: #1b1d0e !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-newsletter-input::placeholder {
+    color: rgba(27, 29, 14, 0.4);
+  }
+
+  .mobile-newsletter-submit {
+    background-color: #800020 !important;
+    color: #f5f5dc !important;
+    padding: 0.75rem 1.5rem !important;
+    font-family: var(--font-label-family) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease !important;
+  }
+
+  .mobile-newsletter-submit:hover {
+    background-color: #5d0016 !important;
+  }
+
+  .mobile-drawer-socials {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-top: 1px solid rgba(27, 29, 14, 0.08);
+    padding-top: 1.5rem;
+  }
+
+  .mobile-social-icons {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .mobile-social-icon-btn {
+    color: #1b1d0e !important;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-social-icon-btn:hover {
+    color: #800020 !important;
+  }
+
+  .mobile-social-icon-btn .material-symbols-outlined {
+    font-size: 1.5rem;
+  }
+
+  .mobile-copyright-text {
+    font-family: var(--font-label-family);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(27, 29, 14, 0.4);
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Header Navigation",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "customer_account_menu",
+      "label": "Customer Account Menu",
+      "default": "customer-account-main-menu"
+    }
+  ]
+}
+{% endschema %}

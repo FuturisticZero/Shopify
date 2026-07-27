@@ -1,0 +1,226 @@
+<div class="hero-section full-width">
+  <div class="overlay-dark"></div>
+  <div class="hero-content">
+    <div class="hero-text-panel">
+      <span class="hero-subtitle">{{ section.settings.subtitle }}</span>
+      <h1 class="hero-title">{{ section.settings.heading }}</h1>
+      <p class="hero-description">{{ section.settings.description }}</p>
+      <div class="hero-buttons">
+        {% if section.settings.button_1_link != blank and section.settings.button_1_text != blank %}
+          <a href="{{ section.settings.button_1_link }}" class="btn">{{ section.settings.button_1_text }}</a>
+        {% endif %}
+        {% if section.settings.button_2_link != blank and section.settings.button_2_text != blank %}
+          <a href="{{ section.settings.button_2_link }}" class="btn btn--secondary">{{ section.settings.button_2_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="hero-image-panel">
+      <div class="hero-image-wrapper">
+        <div class="hero-image-border"></div>
+        {% if section.settings.image != blank %}
+          <img class="hero-img" src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | escape }}" width="500" height="500" loading="eager">
+        {% else %}
+          <img class="hero-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR72vyjsEPOaF3H0mB7oqnYYVPWo9fElTYH4Z_f-1OyQ-1JDrU-KbWL5RrXt6RSju1_fpfDToF58ojU5VhWnUG5MbYZlGdbv-C5w6A0Cgcrxh1qnp2msBDGElY1RGZan9oK_uFhOi5DFwfk07lx1gu6mTrFZmGgIjXcW9dV5eeK-Q3L2wVJC1MZB4Y_KaTfL7YXqHlIiRDLApkMXi6L6pXXZVSne42E-tagCk0De7IziAdZupfLCF5UL1bkUnpuvKbUsk26TFjJaoX" alt="Artisanal Ribeye steak raw on wooden block" width="500" height="500" loading="eager">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .hero-section {
+    position: relative;
+    height: calc(90vh - 6rem);
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLvVhtGT9TyKMrDEeZc5nqAJfaqDcz7-jr6xNOiKjV28jUNgA2Pz0Q9x3OKNd4c_9Waew05AsLi1TzQ1aFQyBbLA0kFqvKWR2nAN5mmLV1S--JsdZN-RHxaFcc91dySH-CrYP4Q17l-FwtV7PrpXn9XHT4mGeMxjTAWSmU9L6oGkL3LxKla_9B0eKgmhwUYk1rWNLBGnpBih87dYwhPf7-YXErP3bSw88uMYTEPsWbveHMG7KghoN0NQcUL3');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-section {
+      background-attachment: fixed;
+    }
+  }
+
+  .overlay-dark {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(19, 19, 19, 0.4), rgba(19, 19, 19, 0.9));
+    z-index: 1;
+  }
+
+  .hero-content {
+    grid-column: 2;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-margin);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero-content {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-gutter);
+    }
+  }
+
+  .hero-text-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-headline-family);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.0;
+    font-weight: 800;
+    color: var(--color-foreground);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-description {
+    font-family: var(--font-body-family);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--color-on-surface);
+    margin-bottom: 2.5rem;
+    max-width: 32rem;
+    font-style: italic;
+    opacity: 0.9;
+  }
+
+  .hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  @media (min-width: 480px) {
+    .hero-buttons {
+      flex-direction: row;
+      width: auto;
+    }
+  }
+
+  .hero-buttons .btn {
+    text-align: center;
+  }
+
+  .hero-image-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-image-wrapper {
+    position: relative;
+    max-width: 450px;
+    width: 100%;
+  }
+
+  .hero-image-border {
+    position: absolute;
+    inset: -1rem;
+    border: 1px solid rgba(255, 179, 181, 0.2); /* primary color with opacity */
+    transform: rotate(3deg);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-image-wrapper:hover .hero-image-border {
+    transform: rotate(0deg);
+  }
+
+  .hero-img {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--style-border-radius);
+    filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.5));
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "ESTABLISHED 1924"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Master's Selection."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Sourced from heritage breeds, hand-carved by third-generation butchers, and aged to absolute perfection in our limestone cellars."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "text",
+      "id": "button_1_text",
+      "label": "Primary Button Text",
+      "default": "Shop The Collection"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_text",
+      "label": "Secondary Button Text",
+      "default": "Our Sourcing"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Secondary Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}

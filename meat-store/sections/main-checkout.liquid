@@ -1,0 +1,893 @@
+<div class="checkout-page-container">
+  <!-- Top Navigation (Focused Secure Checkout Header) -->
+  <div class="checkout-secure-header">
+    <div class="checkout-header-content">
+      <a class="checkout-brand-title" href="/">{{ shop.name }}</a>
+      <div class="secure-badge">
+        <span class="material-symbols-outlined lock-icon">lock</span>
+        <span class="secure-text">Secure Encrypted Checkout</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="checkout-main-content">
+    <!-- Step Indicator -->
+    <div class="checkout-step-indicator">
+      <div class="step-progress-bar">
+        <div class="step-node active">
+          <div class="step-num">1</div>
+          <span class="step-label">Shipping</span>
+        </div>
+        <div class="step-line active-half"></div>
+        <div class="step-node">
+          <div class="step-num">2</div>
+          <span class="step-label">Payment</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-node">
+          <div class="step-num">3</div>
+          <span class="step-label">Confirm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="checkout-grid">
+      <!-- Left Column: Shipping Form -->
+      <section class="checkout-form-section">
+        <div class="checkout-paper-card paper-bg">
+          <div class="paper-top-border-accent"></div>
+          <h2 class="checkout-card-heading">Shipping Details</h2>
+          
+          <form class="checkout-inputs-form" onsubmit="return false;">
+            <div class="input-row-half">
+              <div class="input-field-group">
+                <label class="input-field-label">First Name</label>
+                <input class="checkout-text-input" placeholder="John" type="text" required>
+              </div>
+              <div class="input-field-group">
+                <label class="input-field-label">Last Name</label>
+                <input class="checkout-text-input" placeholder="Doe" type="text" required>
+              </div>
+            </div>
+
+            <div class="input-field-group">
+              <label class="input-field-label">Street Address</label>
+              <input class="checkout-text-input" placeholder="123 Artisan Lane" type="text" required>
+            </div>
+
+            <div class="input-row-third">
+              <div class="input-field-group col-span-city">
+                <label class="input-field-label">City</label>
+                <input class="checkout-text-input" placeholder="Nashville" type="text" required>
+              </div>
+              <div class="input-field-group col-span-state">
+                <label class="input-field-label">State</label>
+                <input class="checkout-text-input" placeholder="TN" type="text" required>
+              </div>
+              <div class="input-field-group col-span-zip">
+                <label class="input-field-label">Zip Code</label>
+                <input class="checkout-text-input" placeholder="37201" type="text" required>
+              </div>
+            </div>
+
+            <!-- Shipping Methods -->
+            <div class="shipping-methods-block">
+              <label class="input-field-label shipping-heading">Shipping Method</label>
+              <div class="shipping-options-list">
+                <!-- Cold Chain Option -->
+                <label class="shipping-option-card selected-option">
+                  <div class="shipping-option-left">
+                    <input checked name="shipping_selector" type="radio" value="24.00" class="shipping-radio-input" onchange="updateShipping(24.00)">
+                    <div class="shipping-option-meta">
+                      <p class="shipping-option-title">Cold-Chain Express</p>
+                      <p class="shipping-option-desc">Delivered within 24-48 hours in wool insulation</p>
+                    </div>
+                  </div>
+                  <span class="shipping-option-price">$24.00</span>
+                </label>
+
+                <!-- Standard Option -->
+                <label class="shipping-option-card">
+                  <div class="shipping-option-left">
+                    <input name="shipping_selector" type="radio" value="12.00" class="shipping-radio-input" onchange="updateShipping(12.00)">
+                    <div class="shipping-option-meta">
+                      <p class="shipping-option-title">Standard Artisan Box</p>
+                      <p class="shipping-option-desc">Delivered within 3-5 days under temperature logs</p>
+                    </div>
+                  </div>
+                  <span class="shipping-option-price">$12.00</span>
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="checkout-trust-row">
+          <div class="checkout-trust-item">
+            <span class="material-symbols-outlined checkout-trust-icon">verified</span>
+            <span class="checkout-trust-text">Quality Guaranteed</span>
+          </div>
+          <div class="checkout-trust-item">
+            <span class="material-symbols-outlined checkout-trust-icon">eco</span>
+            <span class="checkout-trust-text">Compostable Insulation</span>
+          </div>
+          <div class="checkout-trust-item">
+            <span class="material-symbols-outlined checkout-trust-icon">local_shipping</span>
+            <span class="checkout-trust-text">Temperature Tracked</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Order Summary -->
+      <aside class="checkout-sidebar-section">
+        <div class="checkout-paper-card paper-bg relative-summary-card">
+          <div class="summary-badge-icon">
+            <span class="material-symbols-outlined">receipt_long</span>
+          </div>
+          <h2 class="checkout-card-heading sm-title">Your Order</h2>
+
+          <!-- Line Items List -->
+          <div class="checkout-line-items-list">
+            {% if cart.item_count > 0 %}
+              <!-- Real Cart Items -->
+              {% for item in cart.items %}
+                <div class="checkout-item-row">
+                  <div class="checkout-item-img-frame">
+                    {% if item.image %}
+                      <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}" class="checkout-item-img" loading="lazy" width="80" height="80">
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag: 'checkout-item-img placeholder-svg' }}
+                    {% endif %}
+                  </div>
+                  <div class="checkout-item-info">
+                    <div class="checkout-item-header">
+                      <h4 class="checkout-item-title">{{ item.product.title }}</h4>
+                      <span class="checkout-item-price">{{ item.final_line_price | money }}</span>
+                    </div>
+                    <p class="checkout-item-meta">{{ item.quantity }}x • {{ item.variant.title }}</p>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <!-- Mock Items Fallback matching Stitch Design -->
+              <!-- Mock Item 1 -->
+              <div class="checkout-item-row">
+                <div class="checkout-item-img-frame">
+                  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA36l2_8irT5Oj9m4fYkspvIEZc2geqV8dRyZg8oCe4bXos3933_VWZd4HA0-EWUm6IVdLcA7NBGo9Tko0l218iCD9NjkiMjBTrO8ILQVD0JM1uqTGR7WDJQijLm439ihaOhXkthVzeJ4_8owYk3J540Ts5s4HKvWXRTzqeuF6IKoGub3xdQO5BPNHVFCKNqGKV_fouFyUltrMasLQ_nXpYEUIJs4csKMXP-5DzCj5OUb15ZOu3qBm_TtJF8jp1Yjwk_RIAdBQxNzEZ" alt="Dry-Aged Ribeye" class="checkout-item-img" loading="lazy" width="80" height="80">
+                </div>
+                <div class="checkout-item-info">
+                  <div class="checkout-item-header">
+                    <h4 class="checkout-item-title">Dry-Aged Ribeye</h4>
+                    <span class="checkout-item-price">$68.00</span>
+                  </div>
+                  <p class="checkout-item-meta">2x 16oz Cuts • Prime Grade</p>
+                </div>
+              </div>
+
+              <!-- Mock Item 2 -->
+              <div class="checkout-item-row">
+                <div class="checkout-item-img-frame">
+                  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-jZqrbkCR665aEydrqLP_wp5YTTqzlsQsWJGNXlhqzcFgMTPCZpC487gmWmQnby5lgvfRbBUrsAfdpjfiiwHrVPXLyIsHFRzUmcSuFb7rIof37oOiUb7DFoFxk_Oh0hN-BPxRf82lbWedZ3gClEbq1vSMQsFYeKOHrRE1MPvzQaurMYGjoAXwdsPHXKAFKFODhubq2HuXv6xCEUCzUbBdnAwcDd-Gf89-fLS4uxwNgB_4dVqXavfEDzyPJaiVL_35bNbdoslnk2jr" alt="Heritage Pork Sausages" class="checkout-item-img" loading="lazy" width="80" height="80">
+                </div>
+                <div class="checkout-item-info">
+                  <div class="checkout-item-header">
+                    <h4 class="checkout-item-title">Heritage Pork Sausages</h4>
+                    <span class="checkout-item-price">$18.50</span>
+                  </div>
+                  <p class="checkout-item-meta">1x 1.5lb Pack • Garlic &amp; Sage</p>
+                </div>
+              </div>
+
+              <!-- Mock Item 3 -->
+              <div class="checkout-item-row">
+                <div class="checkout-item-img-frame">
+                  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL8Tkzks3MvHmYSfRiPwkiqc7VxZytNCrh-C3A6wEaZqMRIjEvhJOd8XLDwHXMr3VyGcmwzjGinKuT7XmkQJihZUoe5KHaocxSYLYEGyb_Fg1JOjtHPbqmoFhF6Rv2YiZneWB0XdvlilpDPTwUWBOUQnVphcTEU_UBjGeClud_HckbMr4wNh9T2Q7p1xHGRC-YuacA8hLsaE5rcnwSL1jwiNLMrW9vleS_iMo25xqc1dGPDH-Z3FMWEf6FH_QeXsTSHg6pWmShDC9V" alt="Butcher's Finishing Salt" class="checkout-item-img" loading="lazy" width="80" height="80">
+                </div>
+                <div class="checkout-item-info">
+                  <div class="checkout-item-header">
+                    <h4 class="checkout-item-title">Butcher's Finishing Salt</h4>
+                    <span class="checkout-item-price">$12.00</span>
+                  </div>
+                  <p class="checkout-item-meta">1x Glass Jar • Smoked Hickory</p>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Price Summary Blocks -->
+          <div class="checkout-summary-prices">
+            <div class="price-summary-row">
+              <span class="price-summary-label">Subtotal</span>
+              <span class="price-summary-val" id="checkout-subtotal">
+                {% if cart.item_count > 0 %}
+                  {{ cart.total_price | money }}
+                {% else %}
+                  $98.50
+                {% endif %}
+              </span>
+            </div>
+            <div class="price-summary-row">
+              <span class="price-summary-label">Cold-Chain Shipping</span>
+              <span class="price-summary-val text-burgundy" id="checkout-shipping">$24.00</span>
+            </div>
+            <div class="price-summary-row">
+              <span class="price-summary-label">Estimated Tax</span>
+              <span class="price-summary-val" id="checkout-tax">
+                {% if cart.item_count > 0 %}
+                  {% assign tax_calc = cart.total_price | times: 0.0825 %}
+                  {{ tax_calc | money }}
+                {% else %}
+                  $8.12
+                {% endif %}
+              </span>
+            </div>
+
+            <!-- Grand Total -->
+            <div class="price-summary-row grand-total-row">
+              <span class="grand-total-label">Total USD</span>
+              <span class="grand-total-val" id="checkout-grand-total">
+                {% if cart.item_count > 0 %}
+                  {% assign total_calc = cart.total_price | plus: 2400 | plus: tax_calc %}
+                  {{ total_calc | money }}
+                {% else %}
+                  $130.62
+                {% endif %}
+              </span>
+            </div>
+          </div>
+
+          <!-- Submit Action -->
+          <div class="checkout-action-wrapper">
+            <button type="submit" class="btn checkout-action-btn" onclick="submitCheckout(this)">
+              <span>Proceed to Payment</span>
+              <span class="material-symbols-outlined submit-arrow">arrow_forward</span>
+            </button>
+            <p class="checkout-terms-note">
+              By proceeding, you agree to our terms and cold-chain delivery policy. All sales of fresh artisan cuts are final.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Simple state management for checkout page calculations
+  let subtotalAmount = {% if cart.item_count > 0 %}{{ cart.total_price | divided_by: 100.0 }}{% else %}98.50{% endif %};
+  let shippingCost = 24.00;
+  
+  function updateShipping(cost) {
+    shippingCost = cost;
+    
+    // Visual toggling of selection cards
+    const cards = document.querySelectorAll('.shipping-option-card');
+    cards.forEach((card, idx) => {
+      if ((cost === 24.00 && idx === 0) || (cost === 12.00 && idx === 1)) {
+        card.classList.add('selected-option');
+      } else {
+        card.classList.remove('selected-option');
+      }
+    });
+
+    // Update shipping UI
+    document.getElementById('checkout-shipping').innerText = `$${cost.toFixed(2)}`;
+    
+    // Recalculate tax (8.25%)
+    let taxAmount = subtotalAmount * 0.0825;
+    
+    // Recalculate grand total
+    let grandTotal = subtotalAmount + shippingCost + taxAmount;
+    
+    // Update total UI
+    document.getElementById('checkout-tax').innerText = `$${taxAmount.toFixed(2)}`;
+    document.getElementById('checkout-grand-total').innerText = `$${grandTotal.toFixed(2)}`;
+  }
+
+  function submitCheckout(btn) {
+    // Show premium visual feedback
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<span class="material-symbols-outlined spinner-animate">autorenew</span> Processing Secure Transfer...`;
+    btn.style.opacity = '0.8';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+      alert("Checkout simulated successfully! Thank you for ordering from Heritage Butcher.");
+      btn.innerHTML = originalText;
+      btn.style.opacity = '1';
+      btn.disabled = false;
+    }, 1800);
+  }
+</script>
+
+<style>
+  .checkout-page-container {
+    width: 100%;
+    min-height: 100vh;
+    padding-bottom: 5rem;
+  }
+
+  .checkout-secure-header {
+    background-color: rgba(19, 19, 19, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(88, 65, 65, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .checkout-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 1.5rem var(--page-margin);
+  }
+
+  .checkout-brand-title {
+    font-family: var(--font-headline-family);
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: opacity 0.2s ease;
+  }
+
+  .checkout-brand-title:hover {
+    opacity: 0.8;
+  }
+
+  .secure-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lock-icon {
+    font-size: 1rem !important;
+    color: var(--color-secondary);
+    font-variation-settings: 'FILL' 1;
+  }
+
+  .secure-text {
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+  }
+
+  .checkout-main-content {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 3rem var(--page-margin);
+  }
+
+  /* Step Progress Bar */
+  .checkout-step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4rem;
+  }
+
+  .step-progress-bar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 48rem;
+  }
+
+  .step-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 5rem;
+  }
+
+  .step-num {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--color-surface-container-highest);
+    border: 2px solid var(--color-outline-variant);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-label-family);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-on-surface-variant);
+    z-index: 2;
+  }
+
+  .step-node.active .step-num {
+    background-color: var(--color-primary-container);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .step-label {
+    font-family: var(--font-label-family);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
+    margin-top: 0.5rem;
+  }
+
+  .step-node.active .step-label {
+    color: var(--color-primary);
+  }
+
+  .step-line {
+    flex-grow: 1;
+    height: 2px;
+    background-color: var(--color-surface-container-highest);
+    margin: 0 -1.5rem;
+    transform: translateY(-0.5rem);
+    z-index: 1;
+  }
+
+  .step-line.active-half {
+    background: linear-gradient(90deg, var(--color-primary-container) 50%, var(--color-surface-container-highest) 50%);
+  }
+
+  /* Layout Grid */
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .checkout-grid {
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4rem;
+    }
+  }
+
+  .checkout-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .checkout-form-section {
+      grid-column: span 7;
+    }
+  }
+
+  .checkout-paper-card {
+    border-radius: var(--style-border-radius);
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .paper-top-border-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #800020; /* Burgundy accent */
+  }
+
+  .checkout-card-heading {
+    font-family: var(--font-headline-family);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1b1d0e !important;
+    border-bottom: 2px solid rgba(27, 29, 14, 0.1);
+    padding-bottom: 1rem;
+    margin-bottom: 2.5rem;
+    margin-top: 0;
+  }
+
+  .checkout-card-heading.sm-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Inputs and Form */
+  .checkout-inputs-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .input-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .input-field-label {
+    font-family: var(--font-label-family);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #1b1d0e;
+  }
+
+  .checkout-text-input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border: 2px solid rgba(27, 29, 14, 0.2) !important;
+    border-radius: var(--style-border-radius) !important;
+    padding: 0.75rem 1rem !important;
+    font-family: var(--font-body-family);
+    font-size: 1rem;
+    color: #1b1d0e !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease;
+  }
+
+  .checkout-text-input:focus {
+    border-color: #800020 !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .input-row-half {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .input-row-third {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* Shipping Methods Options */
+  .shipping-methods-block {
+    padding-top: 1.5rem;
+  }
+
+  .shipping-heading {
+    margin-bottom: 1rem;
+  }
+
+  .shipping-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .shipping-option-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    background-color: rgba(255, 255, 255, 0.25);
+    border: 2px solid rgba(27, 29, 14, 0.1);
+    border-radius: var(--style-border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .shipping-option-card:hover {
+    background-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .shipping-option-card.selected-option {
+    background-color: rgba(255, 255, 255, 0.55);
+    border-color: #800020;
+  }
+
+  .shipping-option-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .shipping-radio-input {
+    color: #800020 !important;
+    border-color: rgba(27, 29, 14, 0.3) !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .shipping-radio-input:focus {
+    box-shadow: none !important;
+  }
+
+  .shipping-option-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .shipping-option-title {
+    font-family: var(--font-headline-family);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #1b1d0e;
+    margin: 0;
+  }
+
+  .shipping-option-desc {
+    font-family: var(--font-body-family);
+    font-size: 0.75rem;
+    color: rgba(27, 29, 14, 0.6);
+    margin: 0;
+  }
+
+  .shipping-option-price {
+    font-family: var(--font-headline-family);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1b1d0e;
+  }
+
+  /* Bottom Trust Row */
+  .checkout-trust-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    opacity: 0.6;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .checkout-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .checkout-trust-icon {
+    font-size: 1.25rem !important;
+    color: var(--color-secondary);
+  }
+
+  .checkout-trust-text {
+    font-family: var(--font-label-family);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-on-surface-variant);
+  }
+
+  /* Sidebar Order Summary */
+  .checkout-sidebar-section {
+    position: sticky;
+    top: 6rem;
+  }
+
+  @media (min-width: 1024px) {
+    .checkout-sidebar-section {
+      grid-column: span 5;
+    }
+  }
+
+  .relative-summary-card {
+    padding: 2.5rem;
+  }
+
+  .summary-badge-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4rem;
+    height: 4rem;
+    background-color: rgba(128, 0, 32, 0.06);
+    border-left: 1px solid rgba(128, 0, 32, 0.1);
+    border-bottom: 1px solid rgba(128, 0, 32, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(12deg) translate(0.5rem, -0.5rem);
+    border-radius: var(--style-border-radius);
+  }
+
+  .summary-badge-icon .material-symbols-outlined {
+    font-size: 1.5rem !important;
+    color: #800020;
+  }
+
+  /* Line Items */
+  .checkout-line-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    border-bottom: 2px solid rgba(27, 29, 14, 0.1);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    max-height: 16rem;
+    overflow-y: auto;
+  }
+
+  .checkout-item-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .checkout-item-img-frame {
+    width: 4.5rem;
+    height: 4.5rem;
+    background-color: rgba(27, 29, 14, 0.05);
+    border-radius: var(--style-border-radius);
+    padding: 0.125rem;
+    border: 1px solid rgba(27, 29, 14, 0.05);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .checkout-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .checkout-item-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .checkout-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 1rem;
+  }
+
+  .checkout-item-title {
+    font-family: var(--font-headline-family);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1b1d0e !important;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .checkout-item-price {
+    font-family: var(--font-headline-family);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1b1d0e;
+    white-space: nowrap;
+  }
+
+  .checkout-item-meta {
+    font-family: var(--font-body-family);
+    font-size: 0.75rem;
+    color: rgba(27, 29, 14, 0.6);
+    margin-top: 0.125rem;
+    margin-bottom: 0;
+  }
+
+  /* Price summary lines */
+  .checkout-summary-prices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-family: var(--font-label-family);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .price-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(27, 29, 14, 0.7);
+  }
+
+  .price-summary-val {
+    font-family: var(--font-headline-family);
+    font-size: 0.875rem;
+    color: #1b1d0e;
+  }
+
+  .grand-total-row {
+    border-top: 1px solid rgba(27, 29, 14, 0.08);
+    padding-top: 1.25rem;
+    margin-top: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .grand-total-label {
+    font-family: var(--font-headline-family);
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1b1d0e;
+  }
+
+  .grand-total-val {
+    font-family: var(--font-headline-family);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #800020; /* Burgundy */
+  }
+
+  /* Submit Action button */
+  .checkout-action-wrapper {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .checkout-action-btn {
+    width: 100% !important;
+    background-color: #800020 !important; /* Burgundy */
+    color: #f5f5dc !important; /* cream */
+    font-family: var(--font-headline-family) !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    padding: 1.25rem !important;
+    border-radius: var(--style-border-radius) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  .checkout-action-btn:hover {
+    background-color: #a30e2e !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .checkout-action-btn:active {
+    transform: translateY(0) !important;
+  }
+
+  .submit-arrow {
+    font-size: 1.125rem !important;
+  }
+
+  .checkout-terms-note {
+    font-family: var(--font-label-family);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    color: rgba(27, 29, 14, 0.5);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Micro animations */
+  .spinner-animate {
+    animation: rotateSpinner 1.2s linear infinite;
+  }
+
+  @keyframes rotateSpinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Checkout Section",
+  "settings": []
+}
+{% endschema %}

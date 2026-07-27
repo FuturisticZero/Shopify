@@ -1,0 +1,742 @@
+<div class="collection-page-section">
+  <!-- Header & Controls -->
+  <div class="collection-header-panel">
+    <div class="collection-meta-text">
+      <h1 class="collection-page-title">{{ collection.title }}</h1>
+      <p class="collection-page-description">
+        {% if collection.description != blank %}
+          {{ collection.description | strip_html }}
+        {% else %}
+          From pasture to paper. Our master butchers select only the finest heritage breeds, hand-cut with artisanal precision.
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="collection-controls">
+      <!-- Filter Chips -->
+      {% if section.settings.enable_filtering %}
+        <div class="filter-chips">
+          {% assign filter_menu_handle = section.settings.filter_menu %}
+          {% if filter_menu_handle != blank and linklists[filter_menu_handle].links.size > 0 %}
+            {% for link in linklists[filter_menu_handle].links %}
+              {% assign link_active = false %}
+              {% if collection.url == link.url or collection.handle == link.object.handle %}
+                {% assign link_active = true %}
+              {% endif %}
+              <a href="{{ link.url }}" class="filter-chip {% if link_active %}active{% endif %}">
+                {{ link.title }}
+              </a>
+            {% endfor %}
+          {% else %}
+            <!-- Block-based or Fallback Filters -->
+            {% assign all_url = section.settings.all_collection.url | default: '/collections/all' %}
+            {% assign all_handle = section.settings.all_collection.handle | default: 'all' %}
+            {% assign all_label = section.settings.all_collection_label | default: 'All Cuts' %}
+            <a href="{{ all_url }}" class="filter-chip {% if collection.handle == all_handle or collection.handle == 'frontpage' or collection.handle == blank %}active{% endif %}">
+              {{ all_label }}
+            </a>
+            {% if section.blocks.size > 0 %}
+              {% for block in section.blocks %}
+                {% if block.type == 'filter_collection' %}
+                  {% assign filter_collection = block.settings.collection %}
+                  {% if filter_collection != blank %}
+                    {% assign label = block.settings.label | default: filter_collection.title %}
+                    <a href="{{ filter_collection.url }}" class="filter-chip {% if collection.handle == filter_collection.handle %}active{% endif %}" {{ block.shopify_attributes }}>
+                      {{ label }}
+                    </a>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <!-- Default Fallback Filters -->
+              <a href="/collections/beef" class="filter-chip {% if collection.handle == 'beef' %}active{% endif %}">Beef</a>
+              <a href="/collections/pork" class="filter-chip {% if collection.handle == 'pork' %}active{% endif %}">Pork</a>
+              <a href="/collections/lamb" class="filter-chip {% if collection.handle == 'lamb' %}active{% endif %}">Lamb</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Sort Selection -->
+      {% if section.settings.enable_sorting %}
+        <div class="sort-selector-wrapper">
+          <span class="sort-label">Sort by:</span>
+          {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+          <select id="sort-by-select" class="sort-dropdown-custom">
+            {% for option in collection.sort_options %}
+              <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>
+                {{ option.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="products-list-grid">
+    {% if collection.products_count > 0 %}
+      {% paginate collection.products by section.settings.products_per_page %}
+        {% for product in collection.products %}
+          <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+            <div class="relative aspect-square overflow-hidden image-container-dark">
+              {% if product.compare_at_price > product.price %}
+                <div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label-caps text-label-caps px-3 py-1 uppercase">Sale</div>
+              {% elsif product.available == false %}
+                <div class="absolute top-4 left-4 z-10 bg-surface-container-highest text-on-surface-variant font-label-caps text-label-caps px-3 py-1 uppercase">Sold Out</div>
+              {% else %}
+                {% for tag in product.tags %}
+                  {% if tag contains 'Aged' or tag contains 'Organic' or tag contains 'organic' or tag contains 'Limited' or tag contains 'limited' or tag contains 'Signature' or tag contains 'Heirloom' %}
+                    <div class="absolute top-4 left-4 z-10 bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 uppercase">{{ tag }}</div>
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+
+              <a href="{{ product.url }}" class="product-card-image-link">
+                {% if product.featured_image %}
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | escape }}" width="300" height="300" loading="lazy">
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 placeholder-svg' }}
+                {% endif %}
+              </a>
+            </div>
+            
+            <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+              <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">{{ product.type | default: "Heritage Cut" }}</span>
+              <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+              <p class="font-body-md text-body-md italic mb-4 opacity-80">{{ product.description | strip_html | truncatewords: 8 }}</p>
+              <div class="mt-auto flex justify-between items-center mb-4">
+                <span class="font-headline-md text-headline-md text-burgundy">{{ product.price | money }}</span>
+                <span class="font-label-caps text-label-caps opacity-60">
+                  {% if product.variants.first.weight > 0 %}
+                    PER {{ product.variants.first.weight | weight_with_unit }}
+                  {% else %}
+                    EACH
+                  {% endif %}
+                </span>
+              </div>
+
+              {% if product.available %}
+                <form method="post" action="{{ routes.cart_add_url }}" class="plp-add-to-cart-form">
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+                  <button type="submit" class="plp-add-to-cart-submit">Add to Box</button>
+                </form>
+              {% else %}
+                <button class="plp-add-to-cart-submit disabled" disabled>Sold Out</button>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if paginate.pages > 1 %}
+          <div class="pagination-container">
+            {{ paginate | default_pagination }}
+          </div>
+        {% endif %}
+      {% endpaginate %}
+    {% else %}
+      <!-- Fallback Mock Products matching Stitch 'The Butchery' Page Design -->
+      
+      <!-- Card 1 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label-caps text-label-caps px-3 py-1 uppercase">Aged 45 Days</div>
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX2xsWHUDwTuvXxtTlDP1MFM49Hc2fEkCOmLmXPpLKXXdr5WuMAv1DtlXE7gCEdhzwB324NWlVmrcRpFz2xCi23h3DjnDKWm2K1_vzrB_1KTkPn5nvM6fZGDsU4vmm7EZZtCaR1mF_PrZla_HikJonyNDTz1NW2mcp5QPXTN4qch8mawc5VvO4JDk3syj2DZGUF5sGNOyJ1eRXZxH5oAIGXmO7RiVjT-jWLzOdM1yG99h-NlNHfQm3FAjlPolqqI1leufOE9g5AB5O" alt="Heritage Bone-In Ribeye" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Grass-Fed Beef</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Heritage Bone-In Ribeye</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">Distinctive marbling with a buttery finish.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$58.00</span>
+            <span class="font-label-caps text-label-caps opacity-60">PER 500G</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 uppercase">Organic</div>
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGyHP0dX5TvewaY_3J7l6KIXph8R3O9-pRjTYIq_RWet6SasKL1hB4njN1t6DOSnymbsH99Ey5cQPfDQ4yoo3VUotYWIJZF0gUeGs8QaWQQtTU5OotM89j0HIEMEl312OygqHp4uhrp-ZpwodA4YpPjQIng7S_7S2oVCTCO4UXrEpq9FaaihPx2qhHG1hOtu-1GnS7KswTiG7dOtdWuPaQad65mZjYtNcBN6aN1zKLbTZ8sYzpyACmQM0fuoY7wHRTHk6eOVHkknbo" alt="Berkshire Double-Cut Chop" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Pasture-Raised Pork</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Berkshire Double-Cut Chop</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">Succulent and flavorful heritage breed.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$34.00</span>
+            <span class="font-label-caps text-label-caps opacity-60">PER KG</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label-caps text-label-caps px-3 py-1 uppercase">Limited</div>
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAMMjaWeMQ0skPAF7cCGtXMTS67fw-EZTmuttorQ0uAcFig46ofYx4nV66Zf-2OPtddYePX5Y9sF1qgHovJx2h1Kt6kHmSYGA7a8BJ21TVPGLSKmZfxQ4H337845OCxKNg6AyKjWhW9d-k6aIp09bf0Cku4636dOoRsQNXRdmG4oaXG_bd_Y5d2PEUCqh9Lkhtyn3Tcx3hjy7OPg4URGZb_bT4qFHxHqfkDDouozmWs9Zci0Hf0gTUNmS8LYgea64N6_y29jeqTOPg" alt="Artisan Rack of Lamb" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Highland Lamb</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Artisan Rack of Lamb</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">French-trimmed by our master butchers.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$48.50</span>
+            <span class="font-label-caps text-label-caps opacity-60">PER RACK</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-secondary-fixed-dim text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 uppercase">Signature</div>
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnvzZ_NOx9LOAcOaOL3wmZWWEDj_7T62XmpWN9gKP_BIJ0i6z0xFokAFpziEtRhQPy7K_a7XWLo0tWCJ78utVEawttgfStmZmIvHRK9uxXFX2sFfacvdPPZB_gWW14RMkk21Q51PhyLyX7zLEdtGKNYeZyjX6FG-ih5hshFhf4Wp0egDvPxocwIjq5VOfmKqqeNiOIEm9nACxymxavlXBXCeuds1SmcRDSNwvmmkfJ_5NYi3Exa2rhFqWq3ODsgXsywu6DbI5upllJ" alt="Center-Cut Chateaubriand" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Grass-Fed Beef</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Center-Cut Chateaubriand</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">The most tender roast for special occasions.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$92.00</span>
+            <span class="font-label-caps text-label-caps opacity-60">PER KG</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmjclsDrYJkApzNjWZsMKpLzVfTyfSWZ8wQ1D6MbJ4ZbYq5j924DawD_dSHz6ArljOshaeixvgYZsVCV_ciZIj29G8IXU6dfleWgWaQ2c498gUu7ykbZhZq-0j2RI55eCVecekTZV0P7Dp02BigLAcVmHplNs3cAHP25Hw3l9oIMnnd50USBcOpVE9LqotuB5O4ufm8XoX75IRckrvgl9yMFePIjZwoB0nLdjCRdBAqzJn5v2fVFcEzsGZk5-vT5HOgyPvLIbuykpI" alt="The Butcher's Burger Pack" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Beef &amp; Suet Blend</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">The Butcher's Burger Pack</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">A 30-day aged brisket and chuck blend.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$22.00</span>
+            <span class="font-label-caps text-label-caps opacity-60">PACK OF 4</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label-caps text-label-caps px-3 py-1 uppercase">Aged 60 Days</div>
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgfL0FDHTdYtQO1-xdeX1uBr53zVWP4Ri_CzFoCRwvf7C4RP58s7SyYbKNqeacqakFUanHI4iikTqp0ZzSGVSwfhbNgIlaUxEH1RqlYTmXfD92c9XVmg5Qclq043VLrSrPld4XD4PIeLqqenMsMCe-GKTv5VOHwuhTAT0K14Gb4ADVqVmI50vQAKiGohFnHSTuwJxr1dzll2Ajj9xclhFKgenHJRmfNtSbpAXUHsmYMEAAnI24AEKOG_kM-2p_mZaV6x_ySdDYJFqf" alt="Grand Tomahawk Ribeye" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Wagyu Cross Beef</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Grand Tomahawk Ribeye</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">The ultimate steak lover's trophy cut.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$115.00</span>
+            <span class="font-label-caps text-label-caps opacity-60">EACH (~1.2KG)</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFicC2IJLs7jNdrCJ4tb32ge0HdKaX6ZJ08N4LAXaoK7eBXx1OH2He1jGj0FpI-b03mYy_JNrHlStQTvdbv1cRKq9u0cgOasWed-ED9ewnP9DNVfDmnkLlBuMhkdGet7FloPTpFx8mDHSa8kwVbVyBIS0_L1BeTC4R_yjN7Z3JEsWJ361M2n7Yr3d0F3YIWB0N0fFAmRDW4HQdR177XWgbUMIi_LzzV4_XyoOfLlfRDbAhtZtVfzuhm2d0_MlNmwQ2rjfsCwzsIC0a" alt="Honey & Fennel Sausages" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Old-Spot Pork</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Honey &amp; Fennel Sausages</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">Hand-linked heritage breed pork sausages.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$18.00</span>
+            <span class="font-label-caps text-label-caps opacity-60">PER KG</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-secondary text-on-secondary font-label-caps text-label-caps px-3 py-1 uppercase">Heirloom</div>
+          <a href="#" class="product-card-image-link">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjRapQ7WXHyBm_bqO9OO1ujp7LbtKTo1ysY4HYbXEcy_d3Uiho4D5xLfvabxibxmJpqD6R-nu6M-JEJyrrjPSWG4tyIvXQwIDQbIpfY_ouK0eMxLnuhd4THt-MmS4WWxJsNyXSI4fzrbw1zMmyAOXNn34fJXxoYObzZGi5bphvl6GmXSGRXltVy799TYk8L6tO1w6SRt9gy1IqDQoeAR_VRy_LAEnHZ0GexCoMww1gz9qmi1fMhQLi2pxl12ycMe-dwh5Hydg41pA7" alt="Heritage Smoked Brisket" width="300" height="300" loading="lazy">
+          </a>
+        </div>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Smoked Beef</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Heritage Smoked Brisket</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">Slow-smoked over oak for 14 hours.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$42.00</span>
+            <span class="font-label-caps text-label-caps opacity-60">PER KG</span>
+          </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
+        </div>
+      </div>
+
+      <!-- Static Mock Discover Button -->
+      <div class="discover-btn-panel">
+        <button type="button" class="btn btn--secondary discover-more-btn">Discover More Cuts</button>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  // Collection Sorting listener
+  const sortSelect = document.getElementById('sort-by-select');
+  if (sortSelect) {
+    sortSelect.addEventListener('change', (e) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('sort_by', e.target.value);
+      window.location.href = url.href;
+    });
+  }
+</script>
+
+{% stylesheet %}
+  .collection-page-section {
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: var(--spacing-section-gap-mobile) var(--page-margin);
+  }
+
+  @media (min-width: 768px) {
+    .collection-page-section {
+      padding: var(--spacing-section-gap) var(--page-margin);
+    }
+  }
+
+  .collection-header-panel {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 3.5rem;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .collection-header-panel {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+  }
+
+  .collection-meta-text {
+    max-width: 38rem;
+  }
+
+  .collection-page-title {
+    margin-bottom: 1rem;
+    color: var(--color-primary);
+  }
+
+  .collection-page-description {
+    font-family: var(--font-body-family);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--color-on-surface-variant);
+    font-style: italic;
+  }
+
+  .collection-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .collection-controls {
+      align-items: flex-end;
+      width: auto;
+    }
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-outline-variant);
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--style-border-radius);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .filter-chip:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .filter-chip.active {
+    background-color: var(--color-primary-container);
+    color: var(--color-secondary);
+    border-color: var(--color-primary-container);
+  }
+
+  .sort-selector-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .sort-label {
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-outline);
+  }
+
+  .sort-dropdown-custom {
+    background-color: var(--color-surface-container-high) !important;
+    border: 1px solid rgba(228, 228, 204, 0.1) !important;
+    color: var(--color-foreground) !important;
+    font-family: var(--font-label-family) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    padding: 0.5rem 2.5rem 0.5rem 1rem !important;
+    cursor: pointer !important;
+    border-radius: var(--style-border-radius) !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e2e1'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 1.25rem !important;
+  }
+
+  .products-list-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-gutter);
+  }
+
+  @media (min-width: 640px) {
+    .products-list-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .products-list-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .products-list-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .collection-product-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--style-border-radius);
+    overflow: hidden;
+    transition: border-color 0.4s ease;
+  }
+
+  .collection-product-card.border-outline {
+    border: 1px solid rgba(228, 228, 204, 0.05);
+  }
+
+  .collection-product-card:hover {
+    border-color: rgba(228, 228, 204, 0.25);
+  }
+
+  .image-container-dark {
+    position: relative;
+    background-color: var(--color-surface-container-lowest);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+
+  .product-card-image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hover-effect img {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .collection-product-card:hover .hover-effect img,
+  .collection-product-card:hover img {
+    transform: none !important;
+  }
+
+  .quick-add-btn-circle {
+    border-radius: 50% !important;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .collection-product-card:hover .quick-add-btn-circle {
+    opacity: 1 !important;
+    transform: translate(0, 0) !important;
+  }
+
+  .paper-bg {
+    background-color: #f5f5dc; /* Cream parchment fallback */
+    background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLsFkTdzROoOz7jUpqEn2a0w899NJIPEpPlNYFXAgS3TLRtOgOZozIbJQnq7GLCJvfw-W4Bj4B7ATLa8Pn1lPNvRBzrXL_LHfYdmRUSLVrfY0gLuIu-S5_lSVy32bnRVjFQN4-wsfx37k9iLOw2Lp-i80CNC9-Y22lTZKTXUz3c2oP7eiZVIt-zAjcEWZ4qsLqh5sj2OaWMBREjjBY0xUidPJEGH0o1-3G4HAg_2PSr5_xZ2puFq7JJyphxm');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 1.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+  }
+
+  .text-surface-container-lowest {
+    color: #1c1b1b !important; /* Dark charcoal text color for details */
+  }
+
+  .text-surface-container-lowest h3 a {
+    color: #0e0e0e !important;
+    text-decoration: none;
+    font-family: var(--font-headline-family);
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+  }
+
+  .text-surface-container-lowest h3 a:hover {
+    color: #800020 !important; /* burgundy hover */
+  }
+
+  .text-burgundy {
+    color: #800020 !important;
+    font-family: var(--font-headline-family);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+
+  .text-burgundy\/60 {
+    color: rgba(128, 0, 32, 0.6) !important;
+  }
+
+  .discover-btn-panel {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+  }
+
+  .discover-more-btn {
+    padding: 1rem 3rem !important;
+    letter-spacing: 0.2em !important;
+    border-width: 2px !important;
+  }
+
+  .pagination-container {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 4rem;
+    gap: 0.5rem;
+  }
+
+  .pagination-container a,
+  .pagination-container .current {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.5rem;
+    border-radius: var(--style-border-radius);
+    font-family: var(--font-label-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--color-outline-variant);
+    color: var(--color-on-surface-variant);
+    transition: all 0.3s ease;
+  }
+
+  .pagination-container span:not(.current) {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .pagination-container a:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .pagination-container .current {
+    background-color: var(--color-primary-container);
+    color: var(--color-secondary);
+    border-color: var(--color-primary-container);
+  }
+
+  .paper-bg .mt-auto {
+    margin-top: 1.5rem !important; /* Reset standard mt-auto on pricing so it doesn't push price down */
+  }
+
+  .plp-add-to-cart-form {
+    width: 100%;
+    margin-top: auto !important; /* Push form to absolute bottom of details flexbox */
+    padding-top: 1rem;
+  }
+
+  .plp-add-to-cart-submit {
+    width: 100%;
+    background-color: var(--color-primary-container) !important;
+    color: var(--color-secondary) !important;
+    font-family: var(--font-label-family);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1rem;
+    border: none !important;
+    border-radius: var(--style-border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: none !important;
+    outline: none !important;
+    margin-top: auto !important; /* Push disabled button to bottom of details flexbox too */
+  }
+
+  .plp-add-to-cart-submit:hover:not(:disabled) {
+    background-color: #5d0016 !important;
+    transform: translateY(-1px);
+  }
+
+  .plp-add-to-cart-submit:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .plp-add-to-cart-submit:disabled,
+  .plp-add-to-cart-submit.disabled {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: rgba(27, 29, 14, 0.4) !important;
+    cursor: not-allowed;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product List Page",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12,
+      "label": "Products per Page"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable Category Filtering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable Sorting Options",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "filter_menu",
+      "label": "Filter Menu",
+      "info": "Select a menu (e.g. Navigation menu) to control the filter chips. If selected, this menu will be used instead of section blocks."
+    },
+    {
+      "type": "text",
+      "id": "all_collection_label",
+      "label": "All Products Label",
+      "default": "All Cuts",
+      "info": "Label for the first filter chip (e.g. 'All Cuts' or 'All Accessories')"
+    },
+    {
+      "type": "collection",
+      "id": "all_collection",
+      "label": "All Products Collection",
+      "info": "Optional collection for the first filter chip. If empty, links to all products in the store (/collections/all)."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "filter_collection",
+      "name": "Filter Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Filter Label",
+          "info": "Optional. Falls back to collection title."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

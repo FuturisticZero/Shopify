@@ -1,0 +1,288 @@
+/** Critical CSS for the theme. This file is included on every page. */
+
+/* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-height: 100svh;
+}
+
+html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
+  overflow: hidden;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  border-radius: var(--style-border-radius-inputs);
+}
+
+select {
+  background-color: var(--color-background);
+  color: currentcolor;
+}
+
+dialog {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+p {
+  text-wrap: pretty;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p:empty {
+  display: none;
+}
+
+:is(p, h1, h2, h3, h4, h5, h6):first-child,
+:empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
+  margin-block-start: 0;
+}
+
+:is(p, h1, h2, h3, h4, h5, h6):last-child,
+:where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
+  margin-block-end: 0;
+}
+
+/** Theme styles below */
+body {
+  font-family: var(--font-body-family), var(--font-primary--family);
+  color: var(--color-foreground);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding-top: 6rem;
+  background-color: #131313;
+  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://lh3.googleusercontent.com/aida/AP1WRLvVhtGT9TyKMrDEeZc5nqAJfaqDcz7-jr6xNOiKjV28jUNgA2Pz0Q9x3OKNd4c_9Waew05AsLi1TzQ1aFQyBbLA0kFqvKWR2nAN5mmLV1S--JsdZN-RHxaFcc91dySH-CrYP4Q17l-FwtV7PrpXn9XHT4mGeMxjTAWSmU9L6oGkL3LxKla_9B0eKgmhwUYk1rWNLBGnpBih87dYwhPf7-YXErP3bSw88uMYTEPsWbveHMG7KghoN0NQcUL3');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+.textured-bg {
+  background-color: #131313;
+  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://lh3.googleusercontent.com/aida/AP1WRLvVhtGT9TyKMrDEeZc5nqAJfaqDcz7-jr6xNOiKjV28jUNgA2Pz0Q9x3OKNd4c_9Waew05AsLi1TzQ1aFQyBbLA0kFqvKWR2nAN5mmLV1S--JsdZN-RHxaFcc91dySH-CrYP4Q17l-FwtV7PrpXn9XHT4mGeMxjTAWSmU9L6oGkL3LxKla_9B0eKgmhwUYk1rWNLBGnpBih87dYwhPf7-YXErP3bSw88uMYTEPsWbveHMG7KghoN0NQcUL3');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+.paper-texture, .paper-bg, .butcher-paper {
+  background-color: #f5f5dc; /* Cream parchment fallback */
+  background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLsFkTdzROoOz7jUpqEn2a0w899NJIPEpPlNYFXAgS3TLRtOgOZozIbJQnq7GLCJvfw-W4Bj4B7ATLa8Pn1lPNvRBzrXL_LHfYdmRUSLVrfY0gLuIu-S5_lSVy32bnRVjFQN4-wsfx37k9iLOw2Lp-i80CNC9-Y22lTZKTXUz3c2oP7eiZVIt-zAjcEWZ4qsLqh5sj2OaWMBREjjBY0xUidPJEGH0o1-3G4HAg_2PSr5_xZ2puFq7JJyphxm') !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+
+/* Typography settings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline-family);
+  color: var(--color-foreground);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+h1 { font-size: 3rem; }
+h2 { font-size: 2.25rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+@media (max-width: 768px) {
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+a {
+  color: var(--color-foreground);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-primary-container);
+  text-decoration-color: var(--color-primary-container);
+}
+
+label, .label-caps {
+  font-family: var(--font-label-family);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+/* Inputs & Form styling */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select,
+textarea {
+  background-color: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  color: var(--color-on-surface);
+  font-family: var(--font-body-family);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--style-border-radius-inputs);
+  width: 100%;
+  max-width: 100%;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-container);
+  background-color: var(--color-surface-container);
+}
+
+/* Buttons */
+.btn,
+button,
+input[type="submit"],
+input[type="button"],
+.shopify-payment-button__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-headline-family);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--style-border-radius);
+  border: none;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  background-color: var(--color-primary-container);
+  color: var(--color-secondary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  width: auto;
+  box-shadow: none; /* No drop shadows, as per design guidelines */
+}
+
+.btn:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.shopify-payment-button__button:hover {
+  background-color: #9f0f2b; /* Brighter Burgundy for hover/active state */
+  color: #ffffff;
+}
+
+/* Secondary Button style */
+.btn--secondary,
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.btn--secondary:hover,
+.btn-secondary:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-background);
+}
+
+/* Low-contrast outlines for cards/modals */
+.card,
+.modal,
+.elevated-panel {
+  background-color: var(--color-surface-container);
+  border: 1px solid rgba(245, 245, 220, 0.1); /* 1px solid borders in low-opacity Cream */
+  border-radius: var(--style-border-radius);
+  padding: 1.5rem;
+}
+
+/** Section layout utilities */
+
+/**
+ * Setup a grid that enables both full-width and constrained layouts
+ * depending on the class of the child elements.
+ */
+.shopify-section {
+  --content-width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+  --content-margin: minmax(var(--page-margin), 1fr);
+  --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
+
+  position: relative;
+  grid-template-columns: var(--content-grid);
+  display: grid;
+  width: 100%;
+  margin-block-start: var(--spacing-section-gap);
+}
+
+.shopify-section:first-child {
+  margin-block-start: 0;
+}
+
+@media (max-width: 768px) {
+  .shopify-section {
+    margin-block-start: var(--spacing-section-gap-mobile);
+  }
+}
+
+/* Child elements, by default, are constrained to the central column of the grid. */
+.shopify-section > * {
+  grid-column: 2;
+}
+
+/* Child elements that use the full-width utility class span the entire viewport. */
+.shopify-section > .full-width {
+  grid-column: 1 / -1;
+}
+
+/* AJAX Cart Success State */
+.btn.success,
+button.success,
+input[type="submit"].success {
+  background-color: #2e7d32 !important; /* Forest green */
+  color: #ffffff !important;
+}
+

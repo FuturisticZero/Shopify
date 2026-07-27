@@ -1,0 +1,56 @@
+{% style %}
+  {% # Loads all font variantions with display: swap %}
+  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  :root {
+    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    --font-primary--style: {{ settings.type_primary_font.style }};
+    --font-primary--weight: {{ settings.type_primary_font.weight }};
+
+    /* Design Tokens: Premium Rustic Butcher Shop */
+    --font-headline-family: 'Montserrat', sans-serif;
+    --font-body-family: 'Source Serif 4', serif;
+    --font-label-family: 'Montserrat', sans-serif;
+    
+    --page-width: 1280px;
+    --page-margin: 20px;
+    --spacing-gutter: 24px;
+    --spacing-section-gap: 80px;
+    --spacing-section-gap-mobile: 48px;
+
+    /* Colors */
+    --color-background: #131313;
+    --color-foreground: #e5e2e1;
+    --color-on-background: #e5e2e1;
+    
+    --color-primary: #ffb3b5;
+    --color-on-primary: #680018;
+    --color-primary-container: #800020; /* Rich Burgundy */
+    --color-on-primary-container: #ff828a;
+    
+    --color-secondary: #c8c8b0; /* Warm Cream tint */
+    --color-on-secondary: #303221;
+    --color-secondary-container: #494a38;
+    --color-on-secondary-container: #b9baa3;
+    
+    --color-surface: #131313;
+    --color-surface-dim: #131313;
+    --color-surface-bright: #393939;
+    --color-surface-container-lowest: #0e0e0e;
+    --color-surface-container-low: #1c1b1b;
+    --color-surface-container: #20201f;
+    --color-surface-container-high: #2a2a2a;
+    --color-surface-container-highest: #353535;
+    --color-on-surface: #e5e2e1;
+    --color-on-surface-variant: #e0bfbf;
+    
+    --color-outline: #a78a8a;
+    --color-outline-variant: #584141;
+
+    --style-border-radius: 4px;
+    --style-border-radius-inputs: 4px;
+  }
+{% endstyle %}
