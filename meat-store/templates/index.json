@@ -1,20 +1,76 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "hero",
-      "settings": {}
+      "settings": {
+        "subtitle": "ESTABLISHED 1924",
+        "heading": "The Master's Selection.",
+        "description": "Sourced from heritage breeds, hand-carved by third-generation butchers, and aged to absolute perfection in our limestone cellars.",
+        "image": "shopify://shop_images/prime-dry-aged-strip-steak-12-oz.png",
+        "button_1_text": "Shop The Collection",
+        "button_1_link": "",
+        "button_2_text": "Our Sourcing",
+        "button_2_link": ""
+      }
     },
     "featured-bento": {
       "type": "featured-bento",
-      "settings": {}
+      "settings": {
+        "heading": "Featured Collections",
+        "view_all_text": "View All Categories",
+        "view_all_link": "",
+        "card_1_heading": "Beef",
+        "card_1_badge": "Premium Cuts",
+        "card_1_image": "shopify://shop_images/american-wagyu-ribeye-steak-16-oz.png",
+        "card_1_link": "shopify://collections/beef",
+        "card_1_link_text": "Explore Cuts",
+        "card_2_heading": "Chicken",
+        "card_2_sub": "Taste the difference with our air-chilled, pasture-raised chicken—delivered fresh, packed with natural flavor, and trimmed to perfection for your favorite everyday recipes.",
+        "card_2_image": "shopify://shop_images/organic-air-chilled-whole-chicken-4-5-lb.png",
+        "card_2_link": "shopify://collections/chicken",
+        "card_2_link_text": "Shop Chicken",
+        "card_3_heading": "Fish",
+        "card_3_image": "shopify://shop_images/wild-caught-alaskan-sockeye-salmon-portions-1-lb.png",
+        "card_3_link": "shopify://collections/fish",
+        "card_3_link_text": "Browse",
+        "card_4_heading": "Best Cuts",
+        "card_4_sub": "Our cuts are inspected before the get to you to insure the best quality",
+        "card_4_link": "",
+        "card_4_link_text": "Secure My Cut"
+      }
     },
     "heirloom-promise": {
       "type": "heirloom-promise",
-      "settings": {}
+      "settings": {
+        "heading": "The Heirloom Promise",
+        "description": "<p>At Heritage Butcher, we believe that exceptional flavor begins in the pasture. Our heirloom promise is a commitment to transparency, ethical husbandry, and the preservation of rare heritage breeds.</p><p>Every cut we sell is traceable to a single farm where animals are raised with respect, roaming freely on natural grass. We do not use growth hormones or unnecessary antibiotics.</p>",
+        "stamp_top": "GUARANTEED",
+        "stamp_mid": "HERITAGE",
+        "stamp_bottom": "QUALITY",
+        "stat_1_val": "100%",
+        "stat_1_lbl": "GRASS FED",
+        "stat_2_val": "28 DAY",
+        "stat_2_lbl": "MINIMUM AGING",
+        "stat_3_val": "SMALL",
+        "stat_3_lbl": "BATCH FARMS"
+      }
     },
     "featured-products": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "heading": "The Butcher's Recommendation",
+        "collection": "beef",
+        "products_to_show": 3
+      }
     }
   },
   "order": [

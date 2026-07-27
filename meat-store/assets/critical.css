@@ -286,3 +286,106 @@ input[type="submit"].success {
   color: #ffffff !important;
 }
 
+/* Product Card Overlay Badges / Tags styling */
+.relative {
+  position: relative !important;
+}
+.absolute {
+  position: absolute !important;
+}
+.top-4 {
+  top: 1rem !important;
+}
+.left-4 {
+  left: 1rem !important;
+}
+.z-10 {
+  z-index: 10 !important;
+}
+
+.image-container-dark {
+  position: relative !important;
+}
+
+.bg-primary {
+  background-color: #ba1a1a !important; /* Red for Sale */
+}
+.text-on-primary {
+  color: #ffffff !important;
+}
+.bg-surface-container-highest {
+  background-color: var(--color-surface-container-highest) !important;
+}
+.text-on-surface-variant {
+  color: var(--color-on-surface-variant) !important;
+}
+.bg-secondary-fixed {
+  background-color: var(--color-primary-container) !important; /* Rich Burgundy theme color */
+}
+.text-on-secondary-fixed {
+  color: var(--color-secondary) !important; /* Cream color */
+}
+.font-label-caps {
+  font-family: var(--font-label-family), sans-serif !important;
+  font-weight: 700 !important;
+}
+.text-label-caps {
+  font-size: 0.625rem !important;
+  letter-spacing: 0.1em !important;
+}
+.px-3 {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+.py-1 {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+.uppercase {
+  text-transform: uppercase !important;
+}
+
+/* Page Rich Text Content Spacing */
+.page-rich-text {
+  padding-block: 4rem;
+}
+
+.page-content p {
+  margin-block-end: 1.5rem !important;
+  line-height: 1.8 !important;
+  color: var(--color-foreground) !important;
+  opacity: 0.9;
+}
+
+.page-content h2,
+.page-content h3 {
+  margin-block-start: 2.5rem !important;
+  margin-block-end: 1.25rem !important;
+  color: var(--color-foreground) !important;
+  font-family: var(--font-headline-family), sans-serif !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.page-content h2 {
+  font-size: 1.75rem !important;
+}
+
+.page-content h3 {
+  font-size: 1.25rem !important;
+}
+
+.page-content ul,
+.page-content ol {
+  margin-block-end: 1.5rem !important;
+  padding-inline-start: 1.5rem !important;
+}
+
+.page-content li {
+  margin-block-end: 0.75rem !important;
+  line-height: 1.6 !important;
+  color: var(--color-foreground) !important;
+  opacity: 0.9;
+}
+

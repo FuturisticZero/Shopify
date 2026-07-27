@@ -5,35 +5,47 @@
     {% assign collection = collections[section.settings.collection] %}
     {% if collection != blank and collection.products_count > 0 %}
       {% for product in collection.products limit: section.settings.products_to_show %}
-        <div class="product-card-custom border-outline">
-          <div class="product-card-image-wrapper">
-            {% if product.available == false %}
-              <span class="product-card-badge product-card-badge--soldout">Sold Out</span>
-            {% elsif product.compare_at_price > product.price %}
-              <span class="product-card-badge product-card-badge--sale">Sale</span>
+        <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+          <div class="relative aspect-square overflow-hidden image-container-dark">
+            {% if product.compare_at_price > product.price %}
+              <div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label-caps text-label-caps px-3 py-1 uppercase">Sale</div>
+            {% elsif product.available == false %}
+              <div class="absolute top-4 left-4 z-10 bg-surface-container-highest text-on-surface-variant font-label-caps text-label-caps px-3 py-1 uppercase">Sold Out</div>
+            {% else %}
+              {% for tag in product.tags %}
+                {% if tag contains 'Aged' or tag contains 'Organic' or tag contains 'organic' or tag contains 'Limited' or tag contains 'limited' or tag contains 'Signature' or tag contains 'Heirloom' %}
+                  <div class="absolute top-4 left-4 z-10 bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 uppercase">{{ tag }}</div>
+                  {% break %}
+                {% endif %}
+              {% endfor %}
             {% endif %}
+
             <a href="{{ product.url }}" class="product-card-image-link">
-              {% if product.featured_image != blank %}
-                <img class="product-card-image" src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | escape }}" width="300" height="300" loading="lazy">
+              {% if product.featured_image %}
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.featured_image.alt | escape }}" width="300" height="300" loading="lazy">
               {% else %}
-                {{ 'product-1' | placeholder_svg_tag: 'product-card-image placeholder-svg' }}
+                {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 placeholder-svg' }}
               {% endif %}
             </a>
           </div>
-          <div class="product-card-info">
-            <h4 class="product-card-title">
-              <a href="{{ product.url }}">{{ product.title }}</a>
-            </h4>
-            <p class="product-card-vendor">{{ product.vendor }}</p>
-            <div class="product-card-footer">
-              <span class="product-card-price">{{ product.price | money }}</span>
-              <form method="post" action="{{ routes.cart_add_url }}" class="quick-add-form">
-                <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
-                <button type="submit" class="btn quick-add-btn">
-                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
-                </button>
-              </form>
+          
+          <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+            <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">{{ product.type | default: "Heritage Cut" }}</span>
+            <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+            <p class="font-body-md text-body-md italic mb-4 opacity-80">{{ product.description | strip_html | truncatewords: 8 }}</p>
+            
+            <div class="mt-auto flex justify-between items-center mb-4">
+              <span class="font-headline-md text-headline-md text-burgundy">{{ product.price | money }}</span>
             </div>
+
+            {% if product.available %}
+              <form method="post" action="{{ routes.cart_add_url }}" class="plp-add-to-cart-form">
+                <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+                <button type="submit" class="plp-add-to-cart-submit">Add to Box</button>
+              </form>
+            {% else %}
+              <button class="plp-add-to-cart-submit disabled" disabled>Sold Out</button>
+            {% endif %}
           </div>
         </div>
       {% endfor %}
@@ -41,67 +53,59 @@
       <!-- Fallback Mock Products matching Stitch Design System -->
       
       <!-- Product 1 -->
-      <div class="product-card-custom border-outline">
-        <div class="product-card-image-wrapper">
-          <span class="product-card-badge">AGED 45 DAYS</span>
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-primary text-on-primary font-label-caps text-label-caps px-3 py-1 uppercase">Aged 45 Days</div>
           <a href="#" class="product-card-image-link">
-            <img class="product-card-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMa7ZvsxDMMg5toGQ7OkJFi-ujwh0a8upUWd-4Yp8zM4qgsBSn7hvFrEnKDERdZFbc5caRKYnL-VhqvPsb82-CGLTS0Xh9w-57h4iq-lGDoVuQKSQ7OgoBCtvPAKc3hhUjVMyL3eNdRCk57NQnCoBIXca3O-PLxA3YGvC3rFLKywneqNjWTLBliVceore8UYX02gf5eOwDeaA-g4UJlVUkHjKHnP_4R3Hxe7tqcDe-5noc3o5ZkWvZVxUzdJsU16bKidm94kDeeTVg" alt="Bone-In Ribeye raw steak" width="300" height="300" loading="lazy">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMa7ZvsxDMMg5toGQ7OkJFi-ujwh0a8upUWd-4Yp8zM4qgsBSn7hvFrEnKDERdZFbc5caRKYnL-VhqvPsb82-CGLTS0Xh9w-57h4iq-lGDoVuQKSQ7OgoBCtvPAKc3hhUjVMyL3eNdRCk57NQnCoBIXca3O-PLxA3YGvC3rFLKywneqNjWTLBliVceore8UYX02gf5eOwDeaA-g4UJlVUkHjKHnP_4R3Hxe7tqcDe-5noc3o5ZkWvZVxUzdJsU16bKidm94kDeeTVg" alt="Bone-In Ribeye" width="300" height="300" loading="lazy">
           </a>
         </div>
-        <div class="product-card-info">
-          <h4 class="product-card-title">
-            <a href="#">Bone-In Ribeye</a>
-          </h4>
-          <p class="product-card-vendor">Heritage Angus Reserve</p>
-          <div class="product-card-footer">
-            <span class="product-card-price">$74.00</span>
-            <button type="button" class="btn quick-add-btn">
-              <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
-            </button>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Grass-Fed Beef</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Bone-In Ribeye</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">Distinctive marbling with a buttery finish.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$74.00</span>
           </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
         </div>
       </div>
 
       <!-- Product 2 -->
-      <div class="product-card-custom border-outline">
-        <div class="product-card-image-wrapper">
-          <span class="product-card-badge bg-burgundy">LIMITED</span>
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 uppercase">Limited</div>
           <a href="#" class="product-card-image-link">
-            <img class="product-card-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCy9X0tjeB0ptnSC-OKzZmaTp8MUcTH5YVb9FhzUnXoOtJS8RtZO-NJo-RinKRvJoK1QBIM1yrJNR_6znPV68gH8BkxJjgNHNjFwex1Rs--R22yuPhne2DO8hbqLkS7d6mXkCBBSKDCr1XlF1yh3UeN_6ojVqLHMm_bxAPNVqqUI323BWPwe7e0pZjLaW0yPzJJbS0i35Pn9-pGvqzb1-aOySkToanQ3TgNXt_DtK74E_ZeFo1kyotnetuqPdMN3zcgjRo_H8i29qPA" alt="Center-Cut Fillet prime tenderloin slices" width="300" height="300" loading="lazy">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCy9X0tjeB0ptnSC-OKzZmaTp8MUcTH5YVb9FhzUnXoOtJS8RtZO-NJo-RinKRvJoK1QBIM1yrJNR_6znPV68gH8BkxJjgNHNjFwex1Rs--R22yuPhne2DO8hbqLkS7d6mXkCBBSKDCr1XlF1yh3UeN_6ojVqLHMm_bxAPNVqqUI323BWPwe7e0pZjLaW0yPzJJbS0i35Pn9-pGvqzb1-aOySkToanQ3TgNXt_DtK74E_ZeFo1kyotnetuqPdMN3zcgjRo_H8i29qPA" alt="Center-Cut Fillet" width="300" height="300" loading="lazy">
           </a>
         </div>
-        <div class="product-card-info">
-          <h4 class="product-card-title">
-            <a href="#">Center-Cut Fillet</a>
-          </h4>
-          <p class="product-card-vendor">Grass-Fed Prime</p>
-          <div class="product-card-footer">
-            <span class="product-card-price">$58.00</span>
-            <button type="button" class="btn quick-add-btn">
-              <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
-            </button>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Grass-Fed Prime</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Center-Cut Fillet</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">Pasture-raised tenderness cut by hand.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$58.00</span>
           </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
         </div>
       </div>
 
       <!-- Product 3 -->
-      <div class="product-card-custom border-outline">
-        <div class="product-card-image-wrapper">
+      <div class="collection-product-card group flex flex-col bg-surface-container-low border-outline hover-effect">
+        <div class="relative aspect-square overflow-hidden image-container-dark">
+          <div class="absolute top-4 left-4 z-10 bg-secondary-fixed text-on-secondary-fixed font-label-caps text-label-caps px-3 py-1 uppercase">Signature</div>
           <a href="#" class="product-card-image-link">
-            <img class="product-card-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSsz37cP0fP-TD-NuHsSLEN0Uuh-MNa68bjuIrBbGaWlWf_DMDMXVp5HezzGMZj-L4HPpLGNfXeKXme7EarZzK9zJr2Eqhl2PwkftF2AqG0viQpSJEMAQrQfQlBxIhkm62e_HTiRZKElrVKjbUOnFPYf8ELs8rrtCVRrJ8sTsB7mTC2Dky4KserzWNH48iHP-qjKIag2DPU1nZrEpsek-WqD8dXT5mQBLf5RPar7hSHUPO3Albtpl7NyfQrULW4D87fOwIkDyPREA" alt="Double Rib Lamb Chops raw on wooden board" width="300" height="300" loading="lazy">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSsz37cP0fP-TD-NuHsSLEN0Uuh-MNa68bjuIrBbGaWlWf_DMDMXVp5HezzGMZj-L4HPpLGNfXeKXme7EarZzK9zJr2Eqhl2PwkftF2AqG0viQpSJEMAQrQfQlBxIhkm62e_HTiRZKElrVKjbUOnFPYf8ELs8rrtCVRrJ8sTsB7mTC2Dky4KserzWNH48iHP-qjKIag2DPU1nZrEpsek-WqD8dXT5mQBLf5RPar7hSHUPO3Albtpl7NyfQrULW4D87fOwIkDyPREA" alt="Double Rib Lamb Chops" width="300" height="300" loading="lazy">
           </a>
         </div>
-        <div class="product-card-info">
-          <h4 class="product-card-title">
-            <a href="#">Double Rib Lamb Chops</a>
-          </h4>
-          <p class="product-card-vendor">Highland Spring Lamb</p>
-          <div class="product-card-footer">
-            <span class="product-card-price">$42.00</span>
-            <button type="button" class="btn quick-add-btn">
-              <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
-            </button>
+        <div class="paper-bg p-6 flex flex-col flex-grow text-surface-container-lowest">
+          <span class="font-label-caps text-[10px] uppercase tracking-widest text-burgundy/60 mb-1">Highland Spring Lamb</span>
+          <h3 class="font-headline-sm text-headline-sm mb-2 text-surface-container-lowest"><a href="#">Double Rib Lamb Chops</a></h3>
+          <p class="font-body-md text-body-md italic mb-4 opacity-80">French-trimmed by our master butchers.</p>
+          <div class="mt-auto flex justify-between items-center mb-4">
+            <span class="font-headline-md text-headline-md text-burgundy">$42.00</span>
           </div>
+          <button class="plp-add-to-cart-submit">Add to Box</button>
         </div>
       </div>
       
@@ -140,29 +144,27 @@
     }
   }
 
-  .product-card-custom {
+  .collection-product-card {
     display: flex;
     flex-direction: column;
-    background-color: var(--color-surface-container);
     border-radius: var(--style-border-radius);
     overflow: hidden;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease;
+    transition: border-color 0.4s ease;
   }
 
-  .product-card-custom.border-outline {
-    border: 1px solid rgba(228, 228, 204, 0.1);
+  .collection-product-card.border-outline {
+    border: 1px solid rgba(228, 228, 204, 0.05);
   }
 
-  .product-card-custom:hover {
-    transform: none !important;
-    border-color: rgba(228, 228, 204, 0.3);
+  .collection-product-card:hover {
+    border-color: rgba(228, 228, 204, 0.25);
   }
 
-  .product-card-image-wrapper {
+  .image-container-dark {
     position: relative;
-    height: 280px;
-    overflow: hidden;
     background-color: var(--color-surface-container-lowest);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
   }
 
   .product-card-image-link {
@@ -171,108 +173,65 @@
     height: 100%;
   }
 
-  .product-card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.7s ease;
+  .product-card-image-link img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
 
-  .product-card-custom:hover .product-card-image {
+  .hover-effect img {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .collection-product-card:hover .hover-effect img,
+  .collection-product-card:hover img {
     transform: none !important;
   }
 
-  .product-card-badge {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    z-index: 10;
+  .paper-bg .mt-auto {
+    margin-top: auto !important; /* Push price block to bottom of details flexbox */
+    margin-bottom: 0.75rem !important; /* Snug spacing above the button */
+  }
+
+  .plp-add-to-cart-form {
+    width: 100%;
+    margin-top: 0 !important;
+    padding-top: 0;
+  }
+
+  .plp-add-to-cart-submit {
+    width: 100%;
+    background-color: var(--color-primary-container) !important;
+    color: var(--color-secondary) !important;
     font-family: var(--font-label-family);
-    font-size: 0.625rem;
     font-weight: 700;
+    text-transform: uppercase;
     letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.5rem;
-    background-color: var(--color-secondary);
-    color: var(--color-background);
-    border-radius: 2px;
-  }
-
-  .product-card-badge.bg-burgundy {
-    background-color: var(--color-primary-container);
-    color: var(--color-foreground);
-  }
-
-  .product-card-badge--soldout {
-    background-color: var(--color-surface-container-highest);
-    color: var(--color-on-surface-variant);
-  }
-
-  .product-card-badge--sale {
-    background-color: #ba1a1a;
-    color: #ffffff;
-  }
-
-  .product-card-info {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-
-  .product-card-title {
-    margin-bottom: 0.25rem;
-  }
-
-  .product-card-title a {
-    text-decoration: none;
-    color: var(--color-on-surface);
-    font-family: var(--font-headline-family);
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    transition: color 0.2s ease;
-  }
-
-  .product-card-title a:hover {
-    color: var(--color-primary);
-  }
-
-  .product-card-vendor {
-    font-family: var(--font-label-family);
-    font-size: 0.625rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-on-surface-variant);
-    margin-bottom: 1.5rem;
-  }
-
-  .product-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
-  }
-
-  .product-card-price {
-    font-family: var(--font-headline-family);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-primary);
-  }
-
-  .quick-add-form {
-    margin: 0;
-  }
-
-  .quick-add-btn {
-    border-radius: 50% !important;
-    width: 2.75rem;
-    height: 2.75rem;
-    padding: 0 !important;
-    display: flex;
+    padding: 0.75rem 1rem;
+    border: none !important;
+    border-radius: var(--style-border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 0.75rem;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    box-shadow: none !important;
+    outline: none !important;
+    margin-top: 0 !important; /* Sit immediately below price block */
+  }
+
+  .plp-add-to-cart-submit:hover:not(:disabled) {
+    background-color: var(--color-secondary-container) !important;
+    color: var(--color-on-secondary-container) !important;
+  }
+
+  .plp-add-to-cart-submit:disabled,
+  .plp-add-to-cart-submit.disabled {
+    background-color: var(--color-surface-container-highest) !important;
+    color: var(--color-on-surface-variant) !important;
+    cursor: not-allowed !important;
   }
 {% endstylesheet %}
 

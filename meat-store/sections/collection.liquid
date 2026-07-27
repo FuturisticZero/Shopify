@@ -109,13 +109,6 @@
               <p class="font-body-md text-body-md italic mb-4 opacity-80">{{ product.description | strip_html | truncatewords: 8 }}</p>
               <div class="mt-auto flex justify-between items-center mb-4">
                 <span class="font-headline-md text-headline-md text-burgundy">{{ product.price | money }}</span>
-                <span class="font-label-caps text-label-caps opacity-60">
-                  {% if product.variants.first.weight > 0 %}
-                    PER {{ product.variants.first.weight | weight_with_unit }}
-                  {% else %}
-                    EACH
-                  {% endif %}
-                </span>
               </div>
 
               {% if product.available %}
@@ -501,6 +494,12 @@
     height: 100%;
   }
 
+  .product-card-image-link img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
   .hover-effect img {
     transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -625,13 +624,14 @@
   }
 
   .paper-bg .mt-auto {
-    margin-top: 1.5rem !important; /* Reset standard mt-auto on pricing so it doesn't push price down */
+    margin-top: auto !important; /* Push price block to bottom of details flexbox */
+    margin-bottom: 0.75rem !important; /* Snug spacing above the button */
   }
 
   .plp-add-to-cart-form {
     width: 100%;
-    margin-top: auto !important; /* Push form to absolute bottom of details flexbox */
-    padding-top: 1rem;
+    margin-top: 0 !important;
+    padding-top: 0;
   }
 
   .plp-add-to-cart-submit {
@@ -654,7 +654,7 @@
     text-align: center;
     box-shadow: none !important;
     outline: none !important;
-    margin-top: auto !important; /* Push disabled button to bottom of details flexbox too */
+    margin-top: 0 !important; /* Sit immediately below price block */
   }
 
   .plp-add-to-cart-submit:hover:not(:disabled) {
