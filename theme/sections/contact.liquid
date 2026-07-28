@@ -1,0 +1,297 @@
+<div class="contact-section-container">
+  <div class="contact-grid">
+    
+    <!-- Details Column (Butcher Paper styled) -->
+    <div class="contact-info-card paper-bg p-8 flex flex-col justify-between border-outline">
+      <div>
+        <span class="font-label-caps text-xs tracking-widest text-burgundy/60 uppercase block mb-2">Heritage Meats</span>
+        <h2 class="font-headline-lg text-headline-lg text-surface-container-lowest uppercase mb-6">{{ section.settings.heading }}</h2>
+        
+        {% if section.settings.description != blank %}
+          <div class="font-body-md text-surface-container-lowest opacity-85 mb-8 leading-relaxed">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+        
+        <div class="contact-details-list space-y-6">
+          {% if section.settings.store_address != blank %}
+            <div class="contact-detail-item flex items-start gap-4">
+              <span class="material-symbols-outlined text-burgundy opacity-85 mt-0.5">location_on</span>
+              <div>
+                <span class="font-label-caps text-[10px] tracking-wider uppercase block text-burgundy/60 mb-1">Our Cellar</span>
+                <span class="font-body-md text-surface-container-lowest font-semibold">{{ section.settings.store_address }}</span>
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if section.settings.store_phone != blank %}
+            <div class="contact-detail-item flex items-start gap-4">
+              <span class="material-symbols-outlined text-burgundy opacity-85 mt-0.5">call</span>
+              <div>
+                <span class="font-label-caps text-[10px] tracking-wider uppercase block text-burgundy/60 mb-1">Direct Line</span>
+                <span class="font-body-md text-surface-container-lowest font-semibold"><a href="tel:{{ section.settings.store_phone | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' }}" class="hover:text-burgundy transition-colors">{{ section.settings.store_phone }}</a></span>
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if section.settings.store_email != blank %}
+            <div class="contact-detail-item flex items-start gap-4">
+              <span class="material-symbols-outlined text-burgundy opacity-85 mt-0.5">mail</span>
+              <div>
+                <span class="font-label-caps text-[10px] tracking-wider uppercase block text-burgundy/60 mb-1">Inquiries</span>
+                <span class="font-body-md text-surface-container-lowest font-semibold"><a href="mailto:{{ section.settings.store_email }}" class="hover:text-burgundy transition-colors">{{ section.settings.store_email }}</a></span>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Hours of Operation block -->
+      <div class="contact-hours-block border-t border-burgundy/15 pt-6 mt-8">
+        <span class="font-label-caps text-[10px] tracking-wider uppercase block text-burgundy/60 mb-3">Butcher Block Hours</span>
+        <div class="space-y-1.5 font-body-sm text-surface-container-lowest opacity-85">
+          {% if section.settings.store_hours_1 != blank %}
+            <div class="flex justify-between gap-4">
+              <span>{{ section.settings.store_hours_1 }}</span>
+            </div>
+          {% endif %}
+          {% if section.settings.store_hours_2 != blank %}
+            <div class="flex justify-between gap-4">
+              <span>{{ section.settings.store_hours_2 }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Form Column (Darker Surface Card) -->
+    <div class="contact-form-card bg-surface-container border-outline p-8">
+      <h3 class="font-headline-md text-headline-md text-on-surface uppercase mb-6">Send A Message</h3>
+      
+      {% form 'contact', id: 'ContactForm', class: 'contact-form' %}
+        {%- if form.posted_successfully? -%}
+          <div class="contact-form-alert contact-form-alert--success mb-6" tabindex="-1" autofocus>
+            <span class="material-symbols-outlined text-md">check_circle</span>
+            <span>Your message has been sent successfully. We'll get back to you shortly.</span>
+          </div>
+        {%- elsif form.errors -%}
+          <div class="contact-form-alert contact-form-alert--error mb-6">
+            <span class="material-symbols-outlined text-md">error</span>
+            <span>Please adjust the following: {{ form.errors | default_errors }}</span>
+          </div>
+        {%- endif -%}
+
+        <div class="contact-form-grid mb-4">
+          <div class="form-field">
+            <label for="ContactFormName" class="font-label-caps text-[10px] tracking-wider mb-2 block uppercase text-on-surface-variant">Name</label>
+            <input type="text" id="ContactFormName" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" class="contact-input-field" placeholder="Your Name" required>
+          </div>
+          <div class="form-field">
+            <label for="ContactFormEmail" class="font-label-caps text-[10px] tracking-wider mb-2 block uppercase text-on-surface-variant">Email</label>
+            <input type="email" id="ContactFormEmail" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="contact-input-field" placeholder="Your Email" required>
+          </div>
+        </div>
+
+        <div class="form-field mb-4">
+          <label for="ContactFormPhone" class="font-label-caps text-[10px] tracking-wider mb-2 block uppercase text-on-surface-variant">Phone Number</label>
+          <input type="tel" id="ContactFormPhone" name="contact[phone]" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}" class="contact-input-field" placeholder="Your Phone Number">
+        </div>
+
+        <div class="form-field mb-6">
+          <label for="ContactFormMessage" class="font-label-caps text-[10px] tracking-wider mb-2 block uppercase text-on-surface-variant">Message</label>
+          <textarea rows="6" id="ContactFormMessage" name="contact[body]" class="contact-input-field contact-textarea-field" placeholder="How can our butchers help you?" required>{{ form.body }}</textarea>
+        </div>
+
+        <button type="submit" class="contact-form-submit-btn">Send Message</button>
+      {% endform %}
+    </div>
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .contact-section-container {
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 4rem var(--page-margin);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-gutter);
+  }
+
+  @media (min-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr 1.25fr;
+    }
+  }
+
+  .contact-info-card {
+    height: 100%;
+  }
+
+  .contact-info-card.border-outline {
+    border: 1px solid rgba(228, 228, 204, 0.1);
+  }
+
+  .contact-form-card {
+    border-radius: var(--style-border-radius);
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .contact-form-card.border-outline {
+    border: none !important;
+  }
+
+  .contact-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .contact-form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-field label {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .contact-input-field {
+    width: 100%;
+    background-color: var(--color-surface-container-low) !important;
+    border: 1px solid var(--color-outline-variant) !important;
+    color: var(--color-foreground) !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: var(--style-border-radius-inputs) !important;
+    font-family: var(--font-body-family);
+    font-size: 0.875rem;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    outline: none !important;
+  }
+
+  .contact-input-field:focus {
+    border-color: var(--color-primary-container) !important;
+    background-color: var(--color-surface-container-high) !important;
+  }
+
+  .contact-textarea-field {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .contact-form-submit-btn {
+    width: 100%;
+    background-color: var(--color-primary-container) !important;
+    color: var(--color-secondary) !important;
+    font-family: var(--font-label-family);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1.5rem;
+    border: none !important;
+    border-radius: var(--style-border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .contact-form-submit-btn:hover {
+    background-color: var(--color-secondary-container) !important;
+    color: var(--color-on-secondary-container) !important;
+  }
+
+  .contact-form-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: var(--style-border-radius);
+    font-family: var(--font-body-family);
+    font-size: 0.875rem;
+  }
+
+  .contact-form-alert--success {
+    background-color: rgba(46, 125, 50, 0.1);
+    color: #4caf50;
+    border: 1px solid rgba(46, 125, 50, 0.25);
+  }
+
+  .contact-form-alert--error {
+    background-color: rgba(186, 26, 26, 0.1);
+    color: #ffb4ab;
+    border: 1px solid rgba(186, 26, 26, 0.25);
+  }
+
+  .contact-detail-item a {
+    text-decoration: none;
+    color: inherit;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Contact the Butchery"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Have questions about our dry-aging process, custom cuts, or home delivery options? Send our master butchers a message or visit us in-store.</p>"
+    },
+    {
+      "type": "text",
+      "id": "store_address",
+      "label": "Store Address",
+      "default": "128 Heritage Way, Cellar 4, Chicago, IL 60607"
+    },
+    {
+      "type": "text",
+      "id": "store_phone",
+      "label": "Store Phone",
+      "default": "(312) 555-0190"
+    },
+    {
+      "type": "text",
+      "id": "store_email",
+      "label": "Store Email",
+      "default": "butcher@heritagemeats.com"
+    },
+    {
+      "type": "text",
+      "id": "store_hours_1",
+      "label": "Hours Line 1",
+      "default": "Monday - Saturday: 8:00 AM - 7:00 PM"
+    },
+    {
+      "type": "text",
+      "id": "store_hours_2",
+      "label": "Hours Line 2",
+      "default": "Sunday: 10:00 AM - 5:00 PM"
+    }
+  ]
+}
+{% endschema %}

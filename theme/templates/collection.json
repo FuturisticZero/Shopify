@@ -1,36 +1,24 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "collection",
-      "settings": {},
-      "blocks": {
-        "beef": {
-          "type": "filter_collection",
-          "settings": {
-            "collection": "beef",
-            "label": "Beef"
-          }
-        },
-        "pork": {
-          "type": "filter_collection",
-          "settings": {
-            "collection": "pork",
-            "label": "Pork"
-          }
-        },
-        "lamb": {
-          "type": "filter_collection",
-          "settings": {
-            "collection": "lamb",
-            "label": "Lamb"
-          }
-        }
-      },
-      "block_order": [
-        "beef",
-        "pork",
-        "lamb"
-      ]
+      "settings": {
+        "products_per_page": 12,
+        "enable_filtering": false,
+        "enable_sorting": true,
+        "filter_menu": "",
+        "all_collection_label": "All Cuts",
+        "all_collection": ""
+      }
     }
   },
   "order": [

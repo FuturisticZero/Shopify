@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "main": {
+      "type": "contact",
+      "settings": {
+        "heading": "Contact the Butchery",
+        "description": "<p>Have questions about our dry-aging process, custom cuts, or home delivery options? Send our master butchers a message or visit us in-store.</p>",
+        "store_address": "128 Heritage Way, Cellar 4, Chicago, IL 60607",
+        "store_phone": "(312) 555-0190",
+        "store_email": "butcher@heritagemeats.com",
+        "store_hours_1": "Monday - Saturday: 8:00 AM - 7:00 PM",
+        "store_hours_2": "Sunday: 10:00 AM - 5:00 PM"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
